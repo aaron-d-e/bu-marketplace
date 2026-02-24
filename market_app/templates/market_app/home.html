@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BU Marketplace</title>
+</head>
+<body>
+    <h1>BU Marketplace</h1>
+    <!--
+        {% url 'redirect' %} looks up the URL named 'redirect' in market_app/urls.py
+        and outputs /redirect/ — no hard-coded path needed.
+    -->
+    <a href="{% url 'redirect' %}">Go to Redirect</a>
+<a href="{% url 'admin:index' %}">Go to Admin Panel</a>
+
+</body>
+</html>

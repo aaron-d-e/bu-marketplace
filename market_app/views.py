@@ -1,3 +1,9 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def home(request):
+    return render(request, 'market_app/home.html')
+
+
+def redirect(request):
+    return render(request, 'market_app/redirect.html')
