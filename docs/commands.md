@@ -14,3 +14,8 @@
 
 `\conninfo`
 - check which user when you are in interactive postgres shell
+
+# custom commands
+
+`python manage.py create_user {--admin}{username} {password} {email}`
+- creates a new django user with the specified parameters (--admin flag indicates superuser)
