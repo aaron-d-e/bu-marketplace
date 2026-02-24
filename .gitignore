@@ -33,3 +33,5 @@ local_settings.py
 *.swo
 .DS_Store
 Thumbs.db
+
+.env
