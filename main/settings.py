@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'market_app',
 ]
 
 MIDDLEWARE = [
@@ -76,10 +77,26 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+def _env(key, default=None):
+    """Get env var and strip optional surrounding quotes."""
+    val = os.getenv(key, default)
+    if val is None or not isinstance(val, str):
+        return val
+    val = val.strip()
+    if (len(val) >= 2 and
+            ((val[0] == "'" and val[-1] == "'") or (val[0] == '"' and val[-1] == '"'))):
+        return val[1:-1].strip()
+    return val
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': _env('ENGINE', 'django.db.backends.postgresql'),
+        'NAME': _env('NAME'),
+        'USER': _env('USER'),
+        'PASSWORD': _env('PASSWORD'),
+        'HOST': _env('HOST', 'localhost'),
+        'PORT': _env('PORT', '5432'),
     }
 }
 
