@@ -16,8 +16,18 @@ if [[ ! -f "$REQUIREMENTS" ]]; then
   exit 1
 fi
 
+# Prefer python3; fall back to python (common on macOS with python.org installer)
+if command -v python3 &>/dev/null; then
+  PYTHON=python3
+elif command -v python &>/dev/null; then
+  PYTHON=python
+else
+  echo "Error: python3 or python not found in PATH"
+  exit 1
+fi
+
 echo "Creating virtualenv at $REPO_ROOT/$VENV_DIR ..."
-python3 -m venv "$VENV_DIR"
+"$PYTHON" -m venv "$VENV_DIR"
 
 echo "Upgrading pip..."
 "$VENV_DIR/bin/pip" install --upgrade pip
