@@ -1,29 +1,17 @@
-{% extends "market_app/base.html" %}
-
-{% block title %}BU Marketplace — Home{% endblock %}
-
-{% block content %}
-<style>
-    /* Center the hero section vertically and horizontally */
-    .hero {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        text-align: center;
-        gap: 16px;
-        padding: 24px;
-    }
-    .hero h1 { font-size: 2.5rem; }
-    .hero p  { font-size: 1.1rem; color: #555; max-width: 480px; }
-</style>
-
-<section class="hero">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BU Marketplace</title>
+</head>
+<body>
     <h1>BU Marketplace</h1>
-    <p>Buy and sell items within the Boston University community.</p>
-    <!-- Button navigates to /listings/ — uses Django's {% url %} tag so the
-         destination stays correct even if the URL pattern changes later. -->
-    <a href="{% url 'listings' %}" class="btn">Browse Listings</a>
-</section>
-{% endblock %}
+    <!--
+        {% url 'redirect' %} looks up the URL named 'redirect' in market_app/urls.py
+        and outputs /redirect/ — no hard-coded path needed.
+    -->
+    <a href="{% url 'redirect' %}">Go to Redirect</a>
+<a href="{% url 'admin:index' %}">Go to Admin Panel</a>
+
+</body>
+</html>
