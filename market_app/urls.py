@@ -4,4 +4,5 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('redirect/', views.redirect, name='redirect'),
+    path('signup_page/', views.signup_page, name='signup_page'),
 ]

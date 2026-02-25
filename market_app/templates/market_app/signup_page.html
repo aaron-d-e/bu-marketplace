@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up – BU Marketplace</title>
+</head>
+<body>
+    <h1>BU Marketplace</h1>
+    <h2>Sign up</h2>
+
+    <form method="post" action="{% url 'signup_page' %}">
+        {% csrf_token %}
+        <p>
+            <label for="username">Username</label><br>
+            <input type="text" name="username" id="username" required>
+        </p>
+        <p>
+            <label for="email">Email</label><br>
+            <input type="email" name="email" id="email" required>
+        </p>
+        <p>
+            <label for="password">Password</label><br>
+            <input type="password" name="password" id="password" required>
+        </p>
+        <p>
+            <button type="submit">Sign up</button>
+        </p>
+    </form>
+
+    <a href="{% url 'home' %}">Back to home</a>
+</body>
+</html>
