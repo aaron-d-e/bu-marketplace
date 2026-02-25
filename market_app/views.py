@@ -52,4 +52,4 @@ def login_page(request):
     return render(request, 'market_app/login_page.html')
 
 def successful_login(request):
-    return render(request, 'successful_login.html')
+    return render(request, 'market_app/successful_login.html')
