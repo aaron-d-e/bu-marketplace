@@ -18,3 +18,6 @@ def signup_page(request):
             User.objects.create_user(username=username, email=email, password=password)
             return redirect('home')
     return render(request, 'market_app/signup_page.html')
+
+def login_page(request):
+    return render(request, 'market_app/login_page.html')
