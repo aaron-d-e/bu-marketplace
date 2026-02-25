@@ -6,4 +6,5 @@ urlpatterns = [
     path('redirect/', views.redirect, name='redirect'),
     path('signup_page/', views.signup_page, name='signup_page'),
     path('login_page/', views.login_page, name='login_page'),
+    path('successful_login/', views.successful_login, name='successful_login'),
 ]
