@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+# this authenticate function overrides the default authenticate 
+# function to use email instead of username
 class EmailBackend(ModelBackend):
     """Authenticate using email and password. Username remains for in-app use only."""
 

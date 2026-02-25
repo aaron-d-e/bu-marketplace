@@ -14,19 +14,26 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      {% if errors %}
+      <ul class="mb-4 rounded-md bg-red-500/10 px-4 py-3 text-sm text-red-400 list-disc list-inside">
+        {% for error in errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
       <form action="{% url 'signup_page' %}" method="post" class="space-y-6">
         {% csrf_token %}
         <div>
           <label for="username" class="block text-sm/6 font-medium text-gray-100">Username</label>
           <div class="mt-2">
-            <input id="username" type="text" name="username" required autocomplete="username" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+            <input id="username" type="text" name="username" value="{{ username|default:'' }}" required autocomplete="username" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
           </div>
         </div>
 
         <div>
           <label for="email" class="block text-sm/6 font-medium text-gray-100">Email address</label>
           <div class="mt-2">
-            <input id="email" type="email" name="email" required autocomplete="email" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+            <input id="email" type="email" name="email" value="{{ email|default:'' }}" required autocomplete="email" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
           </div>
         </div>
 
