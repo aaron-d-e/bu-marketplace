@@ -53,3 +53,13 @@ def login_page(request):
 
 def successful_login(request):
     return render(request, 'market_app/successful_login.html')
+
+@login_required
+def create_product(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        price = request.POST.get('price')
+        # create a product connected to the user who requests it
+        product = Product.objects.create(title=title, description=description, price=price, user=request.user)
+    return render(request, 'market_app/create_product.html')
