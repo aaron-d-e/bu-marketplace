@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -90,14 +91,9 @@ def _env(key, default=None):
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': _env('ENGINE', 'django.db.backends.postgresql'),
-        'NAME': _env('NAME'),
-        'USER': _env('USER'),
-        'PASSWORD': _env('PASSWORD'),
-        'HOST': _env('HOST', 'localhost'),
-        'PORT': _env('PORT', '5432'),
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600)  # connection pooling
 }
 
 
