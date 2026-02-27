@@ -6,15 +6,11 @@
 </head>
 <body>
     <h1>BU Marketplace</h1>
-    <!--
-        {% url 'redirect_page' %} looks up the URL named 'redirect_page' in market_app/urls.py
-        and outputs /redirect_page/ — no hard-coded path needed.
-    -->
-    <a href="{% url 'redirect_page' %}">Go to Redirect</a>
 <a href="{% url 'admin:index' %}">Go to Admin Panel</a>
 <a href="{% url 'signup_page' %}">Go to Signup</a>
 <a href="{% url 'login_page' %}">Go to Login</a>
 <a href="{% url 'create_product' %}">Go to Create Product</a>
 <a href="{% url 'view_products' %}">My Products</a>
+<a href="{% url 'view_all_products' %}">All Products</a>
 </body>
 </html>

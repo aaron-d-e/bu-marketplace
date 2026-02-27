@@ -9,10 +9,6 @@ from market_app.models import Product
 def home(request):
     return render(request, 'market_app/home.html')
 
-
-def redirect_page(request):
-    return render(request, 'market_app/redirect_page.html')
-
 def signup_page(request):
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
@@ -107,3 +103,9 @@ def create_product(request):
 def view_products(request):
     products = Product.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'market_app/view_products.html', {'products': products})
+
+@login_required
+def view_all_products(request):
+    products = Product.objects.all().order_by('-created_at')
+    return render(request, 'market_app/view_all_products.html', {'products': products})
+
