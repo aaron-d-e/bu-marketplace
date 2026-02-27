@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
+from market_app.models import Product
+
 
 def home(request):
     return render(request, 'market_app/home.html')
@@ -57,9 +61,49 @@ def successful_login(request):
 @login_required
 def create_product(request):
     if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        price = request.POST.get('price')
-        # create a product connected to the user who requests it
-        product = Product.objects.create(title=title, description=description, price=price, user=request.user)
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        price_raw = request.POST.get('price', '').strip()
+        errors = []
+
+        if not title:
+            errors.append('Title is required.')
+
+        if not price_raw:
+            errors.append('Price is required.')
+        else:
+            try:
+                price = float(price_raw)
+            except ValueError:
+                errors.append('Price must be a number.')
+            else:
+                if price <= 0:
+                    errors.append('Price must be greater than 0.')
+
+        if not errors:
+            try:
+                Product.objects.create(
+                    user=request.user,
+                    title=title,
+                    description=description or '',
+                    price=price,
+                )
+                return redirect('view_products')
+            except Exception as e:
+                errors.append('Error creating product: ' + str(e))
+
+        if errors:
+            return render(request, 'market_app/create_product.html', {
+                'errors': errors,
+                'title': title,
+                'description': description,
+                'price': price_raw,
+            })
+
     return render(request, 'market_app/create_product.html')
+
+
+@login_required
+def view_products(request):
+    products = Product.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'market_app/view_products.html', {'products': products})
