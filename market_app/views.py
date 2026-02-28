@@ -1,13 +1,24 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from market_app.models import Product
 
 
 def home(request):
-    return render(request, 'market_app/home.html')
+    featured = Product.objects.filter(sold=False).order_by('-created_at')[:6]
+    total_listings = Product.objects.filter(sold=False).count()
+    return render(request, 'market_app/home.html', {
+        'featured': featured,
+        'total_listings': total_listings,
+    })
+
+
+def browse(request):
+    products = Product.objects.select_related('user').order_by('-created_at')
+    return render(request, 'market_app/browse.html', {'products': products})
 
 
 def redirect_page(request):
@@ -33,7 +44,8 @@ def signup_page(request):
         if not errors:
             # create user if no errors
             User.objects.create_user(username=username, email=email, password=password)
-            return redirect('successful_login') # redirect to successful login page
+            messages.success(request, 'welcome_new_user')
+            return redirect('home')
 
         return render(request, 'market_app/signup_page.html', {
             'errors': errors, # show errors on screen
@@ -50,7 +62,7 @@ def login_page(request):
         if user is not None:
             # login user if authentication is successful
             login(request, user)
-            return redirect('successful_login')
+            return redirect('home')
         else:
             print("Invalid email or password")
     return render(request, 'market_app/login_page.html')
@@ -58,12 +70,21 @@ def login_page(request):
 def successful_login(request):
     return render(request, 'market_app/successful_login.html')
 
+def logout_view(request):
+    logout(request)
+    return redirect('home')
+
+@login_required
+def settings_page(request):
+    return render(request, 'market_app/settings_page.html')
+
 @login_required
 def create_product(request):
     if request.method == 'POST':
         title = request.POST.get('title', '').strip()
         description = request.POST.get('description', '').strip()
         price_raw = request.POST.get('price', '').strip()
+        image_url = request.POST.get('image_url', '').strip() or None
         errors = []
 
         if not title:
@@ -87,6 +108,7 @@ def create_product(request):
                     title=title,
                     description=description or '',
                     price=price,
+                    image_url=image_url,
                 )
                 return redirect('view_products')
             except Exception as e:
@@ -98,6 +120,7 @@ def create_product(request):
                 'title': title,
                 'description': description,
                 'price': price_raw,
+                'image_url': image_url,
             })
 
     return render(request, 'market_app/create_product.html')

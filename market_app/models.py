@@ -12,6 +12,7 @@ class Product(models.Model):
     description = models.TextField(null=True)
     price = models.FloatField(null=False)
     sold = models.BooleanField(default=False)
+    image_url = models.CharField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

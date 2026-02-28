@@ -1,42 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-900">
+<html lang="en" class="h-full bg-gray-950">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Log In – BU Marketplace</title>
+  <title>Log In – Baylor Marketplace</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="h-full">
-  <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" class="mx-auto h-10 w-auto" />
-      <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Create Your Product</h2>
+<body class="h-full text-gray-100 antialiased">
+  <header class="border-b border-white/10 bg-gray-950/80 backdrop-blur sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="{% url 'home' %}" class="font-semibold tracking-tight text-white">Baylor Marketplace</a>
+      <nav class="flex items-center gap-6 text-sm text-gray-400">
+        <a href="{% url 'browse' %}" class="hover:text-white transition-colors">Browse</a>
+        <a href="{% url 'signup_page' %}" class="hover:text-white transition-colors">Sign up</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form action="{% url 'login_page' %}" method="post" class="space-y-6">
+  <div class="flex min-h-[calc(100vh-3.5rem)] flex-col justify-center px-6 py-12">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <h2 class="text-center text-2xl font-semibold text-white mb-8">Log in</h2>
+
+      <form action="{% url 'login_page' %}" method="post" class="space-y-5">
         {% csrf_token %}
         <div>
-          <label for="email" class="block text-sm/6 font-medium text-gray-100">Email address</label>
-          <div class="mt-2">
-            <input id="email" type="email" name="email" required autocomplete="email" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
-          </div>
+          <label for="email" class="block text-sm font-medium text-gray-300 mb-1.5">Email address</label>
+          <input id="email" type="email" name="email" required autocomplete="email"
+            class="block w-full rounded-md bg-gray-900 border border-white/10 px-3 py-2 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 transition-colors" />
         </div>
 
         <div>
-          <label for="password" class="block text-sm/6 font-medium text-gray-100">Password</label>
-          <div class="mt-2">
-            <input id="password" type="password" name="password" required autocomplete="new-password" class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
-          </div>
+          <label for="password" class="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
+          <input id="password" type="password" name="password" required autocomplete="current-password"
+            class="block w-full rounded-md bg-gray-900 border border-white/10 px-3 py-2 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 transition-colors" />
         </div>
 
-        <div>
-          <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Log In</button>
-        </div>
+        <button type="submit"
+          class="w-full rounded-md bg-green-700 hover:bg-green-600 px-4 py-2.5 text-sm font-medium text-white transition-colors">
+          Log in
+        </button>
       </form>
 
-      <p class="mt-10 text-center text-sm/6 text-gray-400">
-        <a href="{% url 'home' %}" class="font-semibold text-indigo-400 hover:text-indigo-300">Back to home</a>
+      <p class="mt-6 text-center text-sm text-gray-500">
+        Don't have an account?
+        <a href="{% url 'signup_page' %}" class="text-green-400 hover:text-green-300 transition-colors">Sign up</a>
       </p>
     </div>
   </div>
