@@ -1,0 +1,118 @@
+:root {
+  --bu-green: #154734;
+  --bu-green-hover: #1a5a42;
+  --bu-gold: #FFB81C;
+  --white: #FFFFFF;
+}
+
+/* Navbar styles */
+.navbar-bu {
+  background-color: var(--bu-green) !important;
+}
+
+.navbar-bu .nav-link {
+  color: var(--white) !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: color 0.2s ease;
+}
+
+.navbar-bu .nav-link:hover,
+.navbar-bu .nav-link:focus {
+  color: var(--bu-gold) !important;
+}
+
+.navbar-bu .navbar-text {
+  color: rgba(255, 255, 255, 0.85);
+  margin-right: 0.5rem;
+}
+
+.navbar-bu .btn-logout {
+  color: var(--white) !important;
+  background: transparent;
+  border: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+.navbar-bu .btn-logout:hover {
+  color: var(--bu-gold) !important;
+}
+
+/* Button styles */
+.btn-bu {
+  background-color: var(--bu-green);
+  border-color: var(--bu-green);
+  color: var(--white);
+}
+
+.btn-bu:hover {
+  background-color: var(--bu-green-hover);
+  border-color: var(--bu-green-hover);
+  color: var(--bu-gold);
+}
+
+/* Products grid */
+.products-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+}
+
+.product-card {
+  background: var(--white);
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+}
+
+.product-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.product-card .price {
+  font-weight: 600;
+  color: var(--bu-green);
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+.product-card .description {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-card .sold-badge {
+  display: inline-block;
+  background-color: #dc3545;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
