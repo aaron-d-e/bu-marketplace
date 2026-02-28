@@ -1,9 +1,30 @@
-# create different views based on which user is logged in
 {% extends "main/base.html"%}
 {% block title %} Products {%endblock%}
 {% block content %}
 <h1>Products</h1>
 {% if user.is_superuser %}
-<h1>You are a superuser</h1>
-{% endif%}
+<p>You are a superuser</p>
+{% endif %}
+
+{% if products %}
+<div class="products-list">
+    {% for product in products %}
+    <div class="product-card">
+        {% if product.image %}
+        <img src="{{ product.image }}" alt="{{ product.title }}">
+        {% endif %}
+        <h3>{{ product.title }}</h3>
+        <p class="price">${{ product.price }}</p>
+        {% if product.description %}
+        <p class="description">{{ product.description }}</p>
+        {% endif %}
+        {% if product.sold %}
+        <span class="sold-badge">Sold</span>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No products available.</p>
+{% endif %}
 {% endblock %}
