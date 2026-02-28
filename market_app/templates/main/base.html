@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,54 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <title>{% block title %}My Site{% endblock %}</title>
-  <style>
-    :root {
-      --bu-green: #154734;
-      --bu-green-hover: #1a5a42;
-      --bu-gold: #FFB81C;
-      --white: #FFFFFF;
-    }
-    .navbar-bu {
-      background-color: var(--bu-green) !important;
-    }
-    .navbar-bu .nav-link {
-      color: var(--white) !important;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      transition: color 0.2s ease;
-    }
-    .navbar-bu .nav-link:hover,
-    .navbar-bu .nav-link:focus {
-      color: var(--bu-gold) !important;
-    }
-    .navbar-bu .navbar-text {
-      color: rgba(255, 255, 255, 0.85);
-      margin-right: 0.5rem;
-    }
-    .navbar-bu .btn-logout {
-      color: var(--white) !important;
-      background: transparent;
-      border: none;
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      transition: color 0.2s ease;
-      cursor: pointer;
-    }
-    .navbar-bu .btn-logout:hover {
-      color: var(--bu-gold) !important;
-    }
-    .btn-bu {
-      background-color: var(--bu-green);
-      border-color: var(--bu-green);
-      color: var(--white);
-    }
-    .btn-bu:hover {
-      background-color: var(--bu-green-hover);
-      border-color: var(--bu-green-hover);
-      color: var(--bu-gold);
-    }
-  </style>
 </head>
 
 <body>
