@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'market_app',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -144,6 +145,31 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Supabase Storage Configuration (S3-compatible)
+SUPABASE_URL = os.getenv('SUPABASE_URL', 'https://nvumdffvsysdmpruyhyu.supabase.co')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+SUPABASE_PROJECT_ID = 'nvumdffvsysdmpruyhyu'
+
+# Django Storages - S3 compatible settings for Supabase
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": "product-images",
+            "endpoint_url": f"https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3",
+            "access_key": os.getenv('SUPABASE_S3_ACCESS_KEY'),
+            "secret_key": os.getenv('SUPABASE_S3_SECRET_KEY'),
+            "region_name": "us-east-1",
+            "default_acl": "public-read",
+            "querystring_auth": False,
+            "custom_domain": f"{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/product-images",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'

@@ -1,6 +1,8 @@
 asgiref==3.11.1
+boto3==1.36.0           # AWS S3 SDK (Supabase storage is S3-compatible)
 dj-database-url==3.1.2  # django parse the Supabase URI
 Django==6.0.2
+django-storages==1.14.4 # custom storage backends
 psycopg==3.3.3
 psycopg-binary==3.3.3   # postgress adapter
 psycopg2-binary==2.9.11
