@@ -1,2 +1,9 @@
 # create different views based on which user is logged in
-#testing
+{% extends "main/base.html"%}
+{% block title %} Products {%endblock%}
+{% block content %}
+<h1>Products</h1>
+{% if user.is_superuser %}
+<h1>You are a superuser</h1>
+{% endif%}
+{% endblock %}

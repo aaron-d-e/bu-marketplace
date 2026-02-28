@@ -34,4 +34,4 @@ def login_view(request):
     return render(request, 'registration/login.html', {'form': form})
 
 def products(request):
-    return render(request, 'market_app/products.html')
+    return render(request, 'main/products.html')
