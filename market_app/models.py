@@ -6,6 +6,8 @@ from django.contrib.auth.models import User, AbstractUser
 
 
 class Product(models.Model):
+    # many products connected to one user
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=False)
     description = models.TextField(null=True)
     price = models.FloatField(null=False)
