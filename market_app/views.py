@@ -37,3 +37,6 @@ def products(request):
     from .models import Product
     products = Product.objects.all()
     return render(request, 'main/products.html', {'products': products})
+
+def create_product(request):
+    return render(request, 'main/create_product.html')
