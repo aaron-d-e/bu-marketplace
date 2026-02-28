@@ -19,6 +19,9 @@
             <a class="nav-link" href="{% url 'home' %}">Home</a>
           </li>
           {% if user.is_authenticated %}
+          <li>
+            <a class="nav-link" href="{% url 'products' %}">Products</a>
+          </li>
           <span class="navbar-text">Logged in as {{ user.username }} | </span>
           <li class="nav-item">
             <form method="post" action="{% url 'logout' %}" class="d-inline">
