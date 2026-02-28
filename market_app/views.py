@@ -34,4 +34,6 @@ def login_view(request):
     return render(request, 'registration/login.html', {'form': form})
 
 def products(request):
-    return render(request, 'main/products.html')
+    from .models import Product
+    products = Product.objects.all()
+    return render(request, 'main/products.html', {'products': products})
