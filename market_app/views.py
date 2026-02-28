@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm, EmailLoginForm
+from .forms import RegisterForm, EmailLoginForm, ProductForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import user_passes_test
 
+def superuser_required(view_func):
+    return user_passes_test(lambda u: u.is_superuser)(view_func)
 
 def home(request):
     return render(request, 'main/home.html')
@@ -38,5 +41,15 @@ def products(request):
     products = Product.objects.all()
     return render(request, 'main/products.html', {'products': products})
 
+@superuser_required
 def create_product(request):
-    return render(request, 'main/create_product.html')
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.user = request.user
+            product.save()
+            return redirect('products')
+    else:
+        form = ProductForm()
+    return render(request, 'main/create_product.html', {'form': form})

@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from .models import Product
 
 
 class RegisterForm(UserCreationForm):
@@ -37,3 +38,9 @@ class EmailLoginForm(forms.Form):
             if not self.user.is_active:
                 raise forms.ValidationError('This account is inactive.')
         return self.cleaned_data
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['title', 'description', 'price', 'image']
