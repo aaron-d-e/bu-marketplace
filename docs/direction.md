@@ -1,109 +1,68 @@
-# Supabase Image Upload & Retrieval for Superuser Review
+# Image Upload & Retrieval (Current Implementation)
 
 ## Overview
-Images uploaded to the Supabase `image` bucket are staged for superuser review before being added to product pages.
+
+Product images are stored in Supabase's **`product-images`** bucket. Uploads go through Django's `ImageField` and **django-storages** using the **S3-compatible Storage API**. No Supabase client is used in app code.
 
 ---
 
-## 1. Setup
+## 1. Upload flow
 
-### Install Supabase Client
-```bash
-pip install supabase
-```
+1. **Form**  
+   - `ProductForm` (in `market_app/forms.py`) includes an `image` field bound to `Product.image` (`ImageField`, optional).
+   - Create-product template: `market_app/templates/main/create_product.html` uses a `<form>` with `enctype="multipart/form-data"` and `{% url 'create_product' %}`.
 
-### Environment Variables
-Add to your `.env`:
-```
-SUPABASE_URL=your-project-url
-SUPABASE_KEY=your-service-role-key
-SUPABASE_BUCKET=image
-```
+2. **View**  
+   - `create_product` in `market_app/views.py` (superuser-only) builds the form with `request.POST` and `request.FILES`.
+   - On valid submit it does `form.save(commit=False)`, sets `product.user = request.user`, then `product.save()`.
+   - Saving the model triggers saving the uploaded file via Django's **default storage backend**.
 
----
+3. **Storage backend**  
+   - In `main/settings.py`, `STORAGES["default"]` is set to `storages.backends.s3.S3Storage` with:
+     - **Bucket:** `product-images`
+     - **Endpoint:** `https://<SUPABASE_PROJECT_ID>.supabase.co/storage/v1/s3`
+     - **Credentials:** `SUPABASE_S3_ACCESS_KEY`, `SUPABASE_S3_SECRET_KEY` from env
+     - **Public read:** `default_acl": "public-read"`, `querystring_auth": False`
+   - So the file is uploaded to Supabase's S3-compatible API and stored in the `product-images` bucket. The `Product` model only stores the file name/path Django assigns (e.g. in the bucket root or per `upload_to` if set).
 
-## 2. Upload Image to Bucket
-
-```python
-from supabase import create_client
-import os
-
-supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
-
-def upload_image(file_path, file_name):
-    """Upload image to pending review folder"""
-    with open(file_path, "rb") as f:
-        response = supabase.storage.from_("image").upload(
-            path=f"pending_review/{file_name}",
-            file=f,
-            file_options={"content-type": "image/jpeg"}
-        )
-    return response
-```
+**Summary:** Browser → multipart form → `create_product` view → `ProductForm` + `Product.save()` → default storage (django-storages S3) → Supabase `product-images` bucket.
 
 ---
 
-## 3. Retrieve Pending Images (Superuser Review)
+## 2. Retrieval flow (rendering on HTML pages)
 
-```python
-def get_pending_images():
-    """List all images awaiting review"""
-    response = supabase.storage.from_("image").list("pending_review")
-    return response
+1. **Data**  
+   - `products` view in `market_app/views.py` loads `Product.objects.all()` and passes `products` to `main/products.html`.
 
-def get_image_url(file_name):
-    """Get public/signed URL for image preview"""
-    url = supabase.storage.from_("image").get_public_url(f"pending_review/{file_name}")
-    return url
-```
+2. **Template**  
+   - In `market_app/templates/main/products.html`, for each product:
+     - If `product.image` is set: `<img src="{{ product.image.url }}" alt="{{ product.title }}">`
+     - Otherwise no image is rendered.
+   - `product.image.url` is provided by Django's `FileField`/`ImageField`: the default storage backend generates the URL (using `custom_domain` from settings), which points at Supabase's **public** object URL for that file in the `product-images` bucket.
 
----
+3. **URL shape**  
+   - With `custom_domain` set, the URL looks like:  
+     `https://<project>.supabase.co/storage/v1/object/public/product-images/<path>/<filename>`  
+   - The browser requests that URL directly from Supabase; no Django view serves the file.
 
-## 4. Approve & Move to Product Images
-
-```python
-def approve_image(file_name, product_id):
-    """Move approved image to products folder"""
-    # Download from pending
-    data = supabase.storage.from_("image").download(f"pending_review/{file_name}")
-    
-    # Upload to products folder
-    supabase.storage.from_("image").upload(
-        path=f"products/{product_id}/{file_name}",
-        file=data,
-        file_options={"content-type": "image/jpeg"}
-    )
-    
-    # Delete from pending
-    supabase.storage.from_("image").remove([f"pending_review/{file_name}"])
-```
+**Summary:** `products` view → `products.html` → `{{ product.image.url }}` → public Supabase URL → browser loads image from Supabase.
 
 ---
 
-## 5. Reject Image
+## 3. Requirements
 
-```python
-def reject_image(file_name):
-    """Remove rejected image from pending review"""
-    supabase.storage.from_("image").remove([f"pending_review/{file_name}"])
-```
+- **Env:** `SUPABASE_S3_ACCESS_KEY`, `SUPABASE_S3_SECRET_KEY` (and optionally `SUPABASE_URL` / project ID) in `.env`.
+- **Supabase:** A bucket named `product-images` with public read access (or policy that allows the URLs generated by the storage backend).
+- **Django:** `django-storages` and `boto3` (see `requirements.txt`).
 
 ---
 
-## Workflow Summary
+## 4. Relevant files
 
-1. **User uploads image** → Goes to `image/pending_review/`
-2. **Superuser reviews** → Fetches list from `pending_review/`
-3. **Approve** → Moves to `image/products/{product_id}/`
-4. **Reject** → Deletes from `pending_review/`
-
----
-
-## Bucket Structure
-```
-image/
-├── pending_review/    # New uploads awaiting approval
-└── products/          # Approved images by product ID
-    ├── {product_id}/
-    └── ...
-```
+| Role              | File |
+|-------------------|------|
+| Form + model      | `market_app/forms.py`, `market_app/models.py` |
+| Upload view       | `market_app/views.py` (`create_product`) |
+| List + render     | `market_app/views.py` (`products`), `market_app/templates/main/products.html` |
+| Create form page  | `market_app/templates/main/create_product.html` |
+| Storage config    | `main/settings.py` (`STORAGES`, Supabase S3 options) |
