@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Delegate all non-admin routes to market_app's URL config.
     # Using include() keeps this file minimal and lets market_app own its routes.
     path('', include('market_app.urls')),
+    path('', include('django.contrib.auth.urls')),
 ]
