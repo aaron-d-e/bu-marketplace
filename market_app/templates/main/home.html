@@ -1,5 +1,93 @@
 {% extends 'main/base.html' %}
-{% block title %}Home Page {% endblock %}
-{% block content %}
-<h1>Home Page!</h1>
+{% load static %}
+{% block title %}S.H.A.R.E Bear - Baylor Marketplace{% endblock %}
+
+{% block fullwidth_content %}
+<!-- Hero Section -->
+<section class="hero-section text-center">
+  <div class="hero-content">
+    <h1 class="hero-title">S.H.A.R.E Bear</h1>
+    <p class="hero-subtitle">Sustainable. Helpful. Affordable. Reusable. Essentials.</p>
+    <p class="hero-tagline">The Baylor marketplace for students, by students.</p>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'sign_up' %}" class="btn btn-bu btn-lg mt-3">Get Started</a>
+    {% else %}
+    <a href="{% url 'products' %}" class="btn btn-bu btn-lg mt-3">Browse Products</a>
+    {% endif %}
+  </div>
+</section>
+
+<div class="homepage-bg">
+<!-- Interactive Info Cards -->
+<section class="info-cards">
+  <div class="container">
+    <div class="row g-4">
+      <!-- WHO Card -->
+      <div class="col-md-4">
+        <div class="info-card" tabindex="0">
+          <div class="info-card-inner">
+            <div class="info-card-front">
+              <img src="{% static 'images/Who.jpg' %}" alt="Who" class="info-card-img">
+              <h3>WHO</h3>
+              <p class="info-hint">Hover to learn more</p>
+            </div>
+            <div class="info-card-back">
+              <h4>For Baylor Students</h4>
+              <p>A marketplace exclusively for the Baylor community. Students helping students find what they need at prices they can afford.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHY Card -->
+      <div class="col-md-4">
+        <div class="info-card" tabindex="0">
+          <div class="info-card-inner">
+            <div class="info-card-front">
+              <img src="{% static 'images/why.jpg' %}" alt="Why" class="info-card-img">
+              <h3>WHY</h3>
+              <p class="info-hint">Hover to learn more</p>
+            </div>
+            <div class="info-card-back">
+              <h4>Sustainability & Savings</h4>
+              <p>Every year, students throw away perfectly good dorm essentials. We rescue them, giving items a second life while saving you money.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOR Card -->
+      <div class="col-md-4">
+        <div class="info-card" tabindex="0">
+          <div class="info-card-inner">
+            <div class="info-card-front">
+              <img src="{% static 'images/for.jpg' %}" alt="For" class="info-card-img">
+              <h3>FOR</h3>
+              <p class="info-hint">Hover to learn more</p>
+            </div>
+            <div class="info-card-back">
+              <h4>Dorm Essentials</h4>
+              <p>Mini-fridges, microwaves, storage bins, furniture, decor, and more. Everything you need to make your dorm feel like home.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mission Statement -->
+<section class="mission-section text-center">
+  <div class="container">
+    <div class="mission-content">
+      <h2>Our Mission</h2>
+      <p class="mission-text">
+        At S.H.A.R.E Bear, we believe no usable item should end up in a landfill. 
+        We connect Baylor students with affordable, pre-loved dorm essentials — 
+        promoting sustainability, reducing waste, and building community one item at a time.
+      </p>
+    </div>
+  </div>
+</section>
+</div>
 {% endblock %}
