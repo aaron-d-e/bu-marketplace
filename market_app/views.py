@@ -17,7 +17,6 @@ def sign_up(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Option B: authenticate so Django knows which backend logged in the user.
             authed_user = authenticate(
                 request,
                 email=user.email,

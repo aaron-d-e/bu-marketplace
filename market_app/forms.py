@@ -17,6 +17,12 @@ class RegisterForm(UserCreationForm):
         model = User
         # the two passwords check that each other are identical
         fields = ['username', 'email', 'password1', 'password2']
+        
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip().lower()
+        if not email.endswith('@baylor.edu'):
+            raise forms.ValidationError('Please use a Baylor email address.')
+        return email
 
 
 class EmailLoginForm(forms.Form):
