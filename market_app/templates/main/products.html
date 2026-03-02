@@ -20,6 +20,9 @@
         <img src="{{ product.image.url }}" alt="{{ product.title }}">
         {% endif %}
         <h3>{{ product.title }}</h3>
+        {% if product.category %}
+        <p class="product-category text-muted small mb-1">{{ product.category.name }}</p>
+        {% endif %}
         <p class="price">${{ product.price }}</p>
         {% if product.description %}
         <p class="description">{{ product.description }}</p>
