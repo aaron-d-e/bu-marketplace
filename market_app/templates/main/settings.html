@@ -1,0 +1,144 @@
+{% extends "main/base.html" %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>Account Settings</h1>
+  </div>
+
+  <!-- Messages -->
+  {% if messages %}
+  <div class="settings-messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Profile Picture Section -->
+  <div class="settings-card">
+    <h2>Profile Picture</h2>
+    
+    <div class="profile-picture-section">
+      <div class="profile-picture-preview">
+        {% if profile.profile_image %}
+          <img src="{{ profile.profile_image.url }}" 
+               alt="Profile picture" 
+               class="profile-picture-img">
+        {% else %}
+          <div class="profile-initials-large">
+            {{ profile.get_initials }}
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="profile-picture-actions">
+        <!-- Upload Form -->
+        <form method="post" enctype="multipart/form-data" class="upload-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="upload">
+          
+          <label for="profile-image-input" class="btn-upload">
+            {% if profile.profile_image %}
+              Change Picture
+            {% else %}
+              Upload Picture
+            {% endif %}
+          </label>
+          {{ form.profile_image }}
+          
+          {% if form.profile_image.errors %}
+            <div class="field-error">
+              {{ form.profile_image.errors.0 }}
+            </div>
+          {% endif %}
+        </form>
+        
+        <!-- Remove Form -->
+        {% if profile.profile_image %}
+        <form method="post" class="remove-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="remove">
+          <button type="submit" class="btn-remove">
+            Remove
+          </button>
+        </form>
+        {% endif %}
+        
+        <p class="upload-hint">
+          JPEG, PNG, or WebP. Max 2MB.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Section -->
+  <div class="settings-card">
+    <h2>Profile</h2>
+    
+    <div class="settings-row">
+      <span class="settings-label">Username</span>
+      <span class="settings-value">{{ user.username }}</span>
+    </div>
+    
+    <div class="settings-row">
+      <span class="settings-label">Email</span>
+      <span class="settings-value">{{ user.email }}</span>
+    </div>
+    
+    <div class="settings-row">
+      <span class="settings-label">Joined</span>
+      <span class="settings-value">{{ user.date_joined|date:"F j, Y" }}</span>
+    </div>
+    
+    {% if user.is_superuser %}
+    <div class="settings-row">
+      <span class="settings-label">Role</span>
+      <span class="staff-badge">Staff</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Appearance Section -->
+  <div class="settings-card">
+    <h2>Appearance</h2>
+    
+    <div class="settings-row">
+      <span class="settings-label">Theme</span>
+      <div class="theme-toggle-group">
+        <button class="theme-btn" id="theme-light" onclick="setTheme('light')">
+          Light
+        </button>
+        <button class="theme-btn" id="theme-dark" onclick="setTheme('dark')">
+          Dark
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Auto-submit on file selection
+  document.getElementById('profile-image-input').addEventListener('change', function() {
+    if (this.files.length > 0) {
+      this.closest('form').submit();
+    }
+  });
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    updateThemeButtons();
+  }
+  
+  function updateThemeButtons() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    document.getElementById('theme-light').classList.toggle('active', currentTheme === 'light');
+    document.getElementById('theme-dark').classList.toggle('active', currentTheme === 'dark');
+  }
+  
+  // Initialize on page load
+  updateThemeButtons();
+</script>
+{% endblock %}

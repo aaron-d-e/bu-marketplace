@@ -1,11 +1,58 @@
 {% extends "main/base.html" %}
+{% load static %}
 {% block title %}Sign Up{% endblock %}
-{% load crispy_forms_tags %}
-{% block content %}
-<form method="post" action="{% url 'sign_up' %}">
-  {% csrf_token %}
-  {{ form|crispy }}
-  <p>Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
-  <button type="submit" class="btn btn-bu">Register</button>
-</form>
+
+{% block fullwidth_content %}
+<div class="login-container">
+  <!-- Left Panel: Sign Up Form -->
+  <div class="login-form-panel">
+    <div class="login-form-wrapper signup-form-wrapper">
+      <div class="login-header">
+        <h1>Create Account</h1>
+        <p>Join the Baylor marketplace</p>
+      </div>
+      
+      <form method="post" action="{% url 'sign_up' %}" class="login-form">
+        {% csrf_token %}
+        
+        {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          <input type="{% if 'password' in field.name %}password{% elif 'email' in field.name %}email{% else %}text{% endif %}"
+                 name="{{ field.name }}" 
+                 id="{{ field.id_for_label }}" 
+                 placeholder="{{ field.label }}"
+                 value="{% if 'password' not in field.name %}{{ field.value|default:'' }}{% endif %}"
+                 {% if field.field.required %}required{% endif %}>
+          {% if field.help_text %}
+          <small class="form-help">{{ field.help_text|safe }}</small>
+          {% endif %}
+          {% if field.errors %}
+          <div class="field-error">
+            {% for error in field.errors %}{{ error }}{% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+        
+        {% if form.non_field_errors %}
+        <div class="error-message">
+          {% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}
+        </div>
+        {% endif %}
+        
+        <button type="submit" class="btn-login">Sign Up</button>
+        
+        <p class="login-link">
+          Already have an account? <a href="{% url 'login' %}">Login</a>
+        </p>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Right Panel: Image -->
+  <div class="login-image-panel">
+    <img src="{% static 'images/customer.png' %}" alt="Student using phone">
+  </div>
+</div>
 {% endblock %}

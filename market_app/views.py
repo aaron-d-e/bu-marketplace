@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
-from .forms import RegisterForm, EmailLoginForm, ProductForm
+from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm
 from django.contrib.auth import login
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib import messages
+from .utils import resize_profile_image
 
 def superuser_required(view_func):
     return user_passes_test(lambda u: u.is_superuser)(view_func)
@@ -53,3 +55,42 @@ def create_product(request):
     else:
         form = ProductForm()
     return render(request, 'main/create_product.html', {'form': form})
+
+@login_required
+def settings_view(request):
+    user_profile = request.user.profile
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'upload':
+            form = ProfilePictureForm(request.POST, request.FILES)
+            if form.is_valid():
+                # Delete old image if exists
+                if user_profile.profile_image:
+                    user_profile.profile_image.delete(save=False)
+                
+                # Resize and save new image
+                image = form.cleaned_data['profile_image']
+                resized_image = resize_profile_image(image)
+                
+                # Generate unique filename
+                filename = f"user_{request.user.id}_{resized_image.name}"
+                user_profile.profile_image.save(filename, resized_image)
+                
+                messages.success(request, 'Profile picture updated successfully!')
+                return redirect('settings')
+        
+        elif action == 'remove':
+            if user_profile.profile_image:
+                user_profile.delete_profile_image()
+                messages.success(request, 'Profile picture removed.')
+            return redirect('settings')
+    
+    else:
+        form = ProfilePictureForm()
+    
+    return render(request, 'main/settings.html', {
+        'form': form,
+        'profile': user_profile,
+    })

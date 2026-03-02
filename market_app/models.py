@@ -1,8 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.files.storage import storages
 
-# Create your models here.
-#
+
+def get_profile_storage():
+    """Return the profile_images storage backend."""
+    return storages["profile_images"]
 
 
 class Product(models.Model):
@@ -18,3 +23,52 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+
+class UserProfile(models.Model):
+    """Extended user profile with profile picture support."""
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+    profile_image = models.ImageField(
+        storage=get_profile_storage,
+        upload_to='',
+        null=True,
+        blank=True
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"
+
+    def get_initials(self):
+        """Generate initials for avatar fallback."""
+        if self.user.first_name and self.user.last_name:
+            return f"{self.user.first_name[0]}{self.user.last_name[0]}".upper()
+        elif self.user.first_name:
+            return self.user.first_name[:2].upper()
+        else:
+            return self.user.username[:2].upper()
+
+    def delete_profile_image(self):
+        """Delete the profile image from storage and clear the field."""
+        if self.profile_image:
+            self.profile_image.delete(save=False)
+            self.profile_image = None
+            self.save()
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    """Auto-create UserProfile when User is created."""
+    if created:
+        UserProfile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    """Ensure profile exists for existing users."""
+    if not hasattr(instance, 'profile'):
+        UserProfile.objects.create(user=instance)
