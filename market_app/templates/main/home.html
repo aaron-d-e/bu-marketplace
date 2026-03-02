@@ -1,5 +1,153 @@
 {% extends 'main/base.html' %}
-{% block title %}Home Page {% endblock %}
-{% block content %}
-<h1>Home Page!</h1>
+{% load static %}
+{% block title %}S.H.A.R.E Bear - Baylor Marketplace{% endblock %}
+
+{% block fullwidth_content %}
+<!-- Hero Section -->
+<section class="hero-section text-center">
+  <div class="hero-content">
+    <h1 class="hero-title">S.H.A.R.E Bear</h1>
+    <p class="hero-subtitle">Sustainable. Helpful. Affordable. Reusable. Essentials.</p>
+    <p class="hero-tagline">The Baylor marketplace for students, by students.</p>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'sign_up' %}" class="btn btn-bu btn-lg mt-3">Get Started</a>
+    {% else %}
+    <a href="{% url 'products' %}" class="btn btn-bu btn-lg mt-3">Browse Products</a>
+    {% endif %}
+  </div>
+</section>
+
+<div class="homepage-bg">
+<!-- Interactive Info Cards -->
+<section class="info-cards">
+  <div class="container">
+    <div class="row g-4">
+      <!-- WHO Card -->
+      <div class="col-md-4">
+        <div class="info-card" tabindex="0">
+          <div class="info-card-inner">
+            <div class="info-card-front">
+              <img src="{% static 'images/Who.jpg' %}" alt="Who" class="info-card-img">
+              <h3>WHO</h3>
+              <p class="info-hint">Hover to learn more</p>
+            </div>
+            <div class="info-card-back">
+              <h4>For Baylor Students</h4>
+              <p>A marketplace exclusively for the Baylor community. Students helping students find what they need at prices they can afford.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHY Card -->
+      <div class="col-md-4">
+        <div class="info-card" tabindex="0">
+          <div class="info-card-inner">
+            <div class="info-card-front">
+              <img src="{% static 'images/why.jpg' %}" alt="Why" class="info-card-img">
+              <h3>WHY</h3>
+              <p class="info-hint">Hover to learn more</p>
+            </div>
+            <div class="info-card-back">
+              <h4>Sustainability & Savings</h4>
+              <p>Every year, students throw away perfectly good dorm essentials. We rescue them, giving items a second life while saving you money.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOR Card -->
+      <div class="col-md-4">
+        <div class="info-card" tabindex="0">
+          <div class="info-card-inner">
+            <div class="info-card-front">
+              <img src="{% static 'images/for.jpg' %}" alt="For" class="info-card-img">
+              <h3>FOR</h3>
+              <p class="info-hint">Hover to learn more</p>
+            </div>
+            <div class="info-card-back">
+              <h4>Dorm Essentials</h4>
+              <p>Mini-fridges, microwaves, storage bins, furniture, decor, and more. Everything you need to make your dorm feel like home.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mission Statement -->
+<section class="mission-section text-center">
+  <div class="container">
+    <div class="mission-content">
+      <h2>Our Mission</h2>
+      <p class="mission-text">
+        At S.H.A.R.E Bear, we believe no usable item should end up in a landfill. 
+        We connect Baylor students with affordable, pre-loved dorm essentials — 
+        promoting sustainability, reducing waste, and building community one item at a time.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+  <div class="container">
+    <div class="features-header text-center">
+      <h2 class="features-title">College has never been <span class="highlight">better.</span></h2>
+      <p class="features-subtitle">Get everything done from the comfort and familiarity of your phone.</p>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <!-- Secure -->
+      <div class="col-6 col-md-3">
+        <div class="feature-item text-center">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Secure</h3>
+          <p class="feature-desc">.edu authentication and buyer protection on purchases.</p>
+        </div>
+      </div>
+      <!-- Lightning-fast -->
+      <div class="col-6 col-md-3">
+        <div class="feature-item text-center">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Lightning-fast</h3>
+          <p class="feature-desc">Post your first listing in under a minute.</p>
+        </div>
+      </div>
+      <!-- Verified Students -->
+      <div class="col-6 col-md-3">
+        <div class="feature-item text-center">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Verified Students</h3>
+          <p class="feature-desc">Trade with other students, not strangers.</p>
+        </div>
+      </div>
+      <!-- Intuitive -->
+      <div class="col-6 col-md-3">
+        <div class="feature-item text-center">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+          </div>
+          <h3 class="feature-title">Intuitive</h3>
+          <p class="feature-desc">List an item in a few simple steps. Message sellers with ease.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
 {% endblock %}
