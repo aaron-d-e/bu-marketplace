@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from .utils import resize_profile_image
@@ -17,7 +17,17 @@ def sign_up(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            # Option B: authenticate so Django knows which backend logged in the user.
+            authed_user = authenticate(
+                request,
+                email=user.email,
+                password=form.cleaned_data.get('password1'),
+            )
+            if authed_user is not None:
+                login(request, authed_user)
+            else:
+                # Fallback to avoid ValueError if authentication fails unexpectedly.
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('home')
     else:
         form = RegisterForm()
