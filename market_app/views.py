@@ -94,3 +94,19 @@ def settings_view(request):
         'form': form,
         'profile': user_profile,
     })
+
+
+def leadership(request):
+    return render(request, 'main/leadership.html')
+
+
+def mission(request):
+    return render(request, 'main/mission.html')
+
+
+def policy(request):
+    return render(request, 'main/policy.html')
+
+
+def terms(request):
+    return render(request, 'main/terms.html')

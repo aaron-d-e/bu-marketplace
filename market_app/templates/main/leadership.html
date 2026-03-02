@@ -1,0 +1,97 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Meet Our Leadership{% endblock %}
+
+{% block content %}
+<div class="leadership-page">
+  <h1 class="page-title">Meet Our Leadership</h1>
+  <p class="page-subtitle">The team behind S.H.A.R.E Bear at Baylor University</p>
+
+  <div class="team-grid">
+    <!-- Erick Martinez -->
+    <div class="team-card">
+      <div class="team-photo-placeholder">
+        <img src="{% static 'images/team/emartinez.jpeg' %}" alt="Erick Martinez" class="team-photo">
+      </div>
+      <div class="team-info">
+        <h3 class="team-name">Erick Martinez</h3>
+        <p class="team-role">Computer Science & Mathematics</p>
+        <p class="team-bio">
+          Erick is an undergraduate double majoring in Computer Science and Mathematics. He serves as the Vice President of ACM at Baylor and a Project Lead for 180 Degrees Consulting. He is a driven software engineer with a background in RAG development and digital transformation, currently focused on the intersection of AI and secure, scalable code.
+        </p>
+      </div>
+    </div>
+
+    <!-- Carter Lewis -->
+    <div class="team-card">
+      <div class="team-photo-placeholder">
+        <img src="{% static 'images/team/clewis.jpeg' %}" alt="Carter Lewis" class="team-photo">
+      </div>
+      <div class="team-info">
+        <h3 class="team-name">Carter Lewis</h3>
+        <p class="team-role">Computer Science & BIC</p>
+        <p class="team-bio">
+          Carter is an undergraduate studying Computer Science and the Baylor Interdisciplinary Core. He is a University Innovation Fellow and IT Leadership intern who is passionate about people and sustainability. After graduation, he aims to bring his technical and leadership skills into the consulting industry.
+        </p>
+      </div>
+    </div>
+
+    <!-- Aaron Evans -->
+    <div class="team-card">
+      <div class="team-photo-placeholder">
+        <img src="{% static 'images/team/aevans.jpeg' %}" alt="Aaron Evans" class="team-photo">
+      </div>
+      <div class="team-info">
+        <h3 class="team-name">Aaron Evans</h3>
+        <p class="team-role">Computer Science & Mathematics</p>
+        <p class="team-bio">
+          Aaron is an undergraduate studying Computer Science and Mathematics with a concentration in Cybersecurity. He serves as a Program Director for ACM and a Project Lead for 180 Degrees Consulting. He is an avid game developer and competitive programmer who enjoys applying technical solutions to complex financial and security problems.
+        </p>
+      </div>
+    </div>
+
+    <!-- Abbie Green -->
+    <div class="team-card">
+      <div class="team-photo-placeholder">
+        <img src="{% static 'images/team/agreen.jpeg' %}" alt="Abbie Green" class="team-photo">
+      </div>
+      <div class="team-info">
+        <h3 class="team-name">Abbie Green</h3>
+        <p class="team-role">Accounting & MIS</p>
+        <p class="team-bio">
+          Abbie is a Business Scholar at Baylor University majoring in Accounting and MIS. She is the Co-Founder and VP of External Relations for 180 Degrees Consulting and a University Innovation Fellow. With experience as a Bain & Company Kickstart Fellow and a background in campus leadership, she is focused on driving social impact through consulting, audit, and advisory.
+        </p>
+      </div>
+    </div>
+
+    <!-- Alan Miguel -->
+    <div class="team-card">
+      <div class="team-photo-placeholder">
+        <img src="{% static 'images/team/amiguel.jpeg' %}" alt="Alan Miguel" class="team-photo">
+      </div>
+      <div class="team-info">
+        <h3 class="team-name">Alan Miguel</h3>
+        <p class="team-role">Finance, Management & Data Science</p>
+        <p class="team-bio">
+          Alan is an undergraduate studying Finance, Management, and Data Science at Baylor University. He serves as the Director of Engagements for The Consulting Group at Baylor and is the VP of Leadership Development for Scholars of Finance. As a University Innovation Fellow, he is dedicated to ethical business leadership and has led high-impact initiatives in sustainability and food waste reduction across campus.
+        </p>
+      </div>
+    </div>
+
+    <!-- Naina Uppal -->
+    <div class="team-card">
+      <div class="team-photo-placeholder">
+        <img src="{% static 'images/team/nuppal.jpeg' %}" alt="Naina Uppal" class="team-photo">
+      </div>
+      <div class="team-info">
+        <h3 class="team-name">Naina Uppal</h3>
+        <p class="team-role">History</p>
+        <p class="team-bio">
+          Naina is an undergraduate at Baylor University pursuing a Bachelor of Arts in History. As a member of the University Innovation Fellows (UIF), she is dedicated to campus leadership and collaborative problem-solving. She is passionate about leveraging her background in the humanities to drive creative initiatives and student-led change within the Baylor community.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
