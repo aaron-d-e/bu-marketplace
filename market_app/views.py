@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm
-from django.contrib.auth import login
+from .models import Product, Category
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from .utils import resize_profile_image
@@ -17,7 +18,16 @@ def sign_up(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            authed_user = authenticate(
+                request,
+                email=user.email,
+                password=form.cleaned_data.get('password1'),
+            )
+            if authed_user is not None:
+                login(request, authed_user)
+            else:
+                # Fallback to avoid ValueError if authentication fails unexpectedly.
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('home')
     else:
         form = RegisterForm()
@@ -39,9 +49,17 @@ def login_view(request):
     return render(request, 'registration/login.html', {'form': form})
 
 def products(request):
-    from .models import Product
-    products = Product.objects.all()
-    return render(request, 'main/products.html', {'products': products})
+    categories = Category.objects.all().order_by('name')
+    category_id = request.GET.get('category')
+    if category_id:
+        products = Product.objects.filter(category_id=category_id)
+    else:
+        products = Product.objects.all()
+    return render(request, 'main/products.html', {
+        'products': products,
+        'categories': categories,
+        'selected_category_id': category_id,
+    })
 
 @superuser_required
 def create_product(request):
@@ -55,6 +73,31 @@ def create_product(request):
     else:
         form = ProductForm()
     return render(request, 'main/create_product.html', {'form': form})
+
+
+@superuser_required
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product updated successfully.')
+            return redirect('products')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'main/edit_product.html', {'form': form, 'product': product})
+
+
+@superuser_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, 'Product deleted.')
+        return redirect('products')
+    return render(request, 'main/delete_product_confirm.html', {'product': product})
+
 
 @login_required
 def settings_view(request):
@@ -94,3 +137,19 @@ def settings_view(request):
         'form': form,
         'profile': user_profile,
     })
+
+
+def leadership(request):
+    return render(request, 'main/leadership.html')
+
+
+def mission(request):
+    return render(request, 'main/mission.html')
+
+
+def policy(request):
+    return render(request, 'main/policy.html')
+
+
+def terms(request):
+    return render(request, 'main/terms.html')

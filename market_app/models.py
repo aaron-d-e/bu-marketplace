@@ -15,6 +15,7 @@ class Product(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=False)
     description = models.TextField(null=True)
+    category = models.ForeignKey('Category', null=True, on_delete=models.CASCADE)
     price = models.FloatField(null=False)
     image = models.ImageField(null=True)
     sold = models.BooleanField(default=False)
@@ -23,6 +24,12 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, null=False)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class UserProfile(models.Model):

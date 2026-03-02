@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from .models import Product
+from .models import Product, Category
 
 
 ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -17,6 +17,12 @@ class RegisterForm(UserCreationForm):
         model = User
         # the two passwords check that each other are identical
         fields = ['username', 'email', 'password1', 'password2']
+        
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').strip().lower()
+        if not email.endswith('@baylor.edu'):
+            raise forms.ValidationError('Please use a Baylor email address.')
+        return email
 
 
 class EmailLoginForm(forms.Form):
@@ -48,11 +54,12 @@ class EmailLoginForm(forms.Form):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['title', 'description', 'price', 'image']
+        fields = ['title', 'category', 'description', 'price', 'image']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['image'].required = False
+        self.fields['category'].queryset = Category.objects.all().order_by('name')
 
 
 class ProfilePictureForm(forms.Form):
