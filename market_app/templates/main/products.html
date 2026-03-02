@@ -27,6 +27,11 @@
         {% if product.sold %}
         <span class="sold-badge">Sold</span>
         {% endif %}
+
+        {% if user.is_superuser %}
+        <a href="{% url 'edit_product' product.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'delete_product' product.id %}" class="btn btn-danger">Delete</a>
+        {% endif %}
     </div>
     {% endfor %}
 </div>

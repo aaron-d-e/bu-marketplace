@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm
+from .models import Product
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
@@ -48,7 +49,6 @@ def login_view(request):
     return render(request, 'registration/login.html', {'form': form})
 
 def products(request):
-    from .models import Product
     products = Product.objects.all()
     return render(request, 'main/products.html', {'products': products})
 
@@ -64,6 +64,31 @@ def create_product(request):
     else:
         form = ProductForm()
     return render(request, 'main/create_product.html', {'form': form})
+
+
+@superuser_required
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product updated successfully.')
+            return redirect('products')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'main/edit_product.html', {'form': form, 'product': product})
+
+
+@superuser_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, 'Product deleted.')
+        return redirect('products')
+    return render(request, 'main/delete_product_confirm.html', {'product': product})
+
 
 @login_required
 def settings_view(request):

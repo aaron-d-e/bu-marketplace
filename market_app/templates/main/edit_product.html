@@ -1,0 +1,20 @@
+{% extends "main/base.html" %}
+{% block title %}Edit Product{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <h1 class="mb-4">Edit Product</h1>
+
+    <form method="post" action="{% url 'edit_product' product.pk %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-bu">Save Changes</button>
+        <a href="{% url 'products' %}" class="btn btn-outline-secondary">Cancel</a>
+        <a href="{% url 'delete_product' product.pk %}" class="btn btn-outline-danger ms-auto">Delete Product</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
