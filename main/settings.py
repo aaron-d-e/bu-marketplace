@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 import dj_database_url
 from dotenv import load_dotenv
 
@@ -98,11 +99,16 @@ def _env(key, default=None):
     return val
 
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600)  # connection pooling
-}
+# On Vercel static build (build.sh runs migrate/collectstatic), use SQLite so we don't
+# need the Postgres driver during build. At runtime (wsgi) we use Postgres from DATABASE_URL.
+if os.getenv('VERCEL') and len(sys.argv) > 1 and sys.argv[1] in ('collectstatic', 'migrate', 'makemigrations'):
+    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': ':memory:'}}
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600)  # connection pooling
+    }
 
 
 AUTHENTICATION_BACKENDS = [
@@ -148,7 +154,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / "staticfiles_build" / "static"
 
 # Supabase Storage Configuration (S3-compatible)
 SUPABASE_URL = os.getenv('SUPABASE_URL', 'https://nvumdffvsysdmpruyhyu.supabase.co')
