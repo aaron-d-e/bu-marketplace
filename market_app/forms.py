@@ -2,7 +2,12 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from .models import Product
+
+
+ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+MAX_IMAGE_SIZE = 2 * 1024 * 1024  # 2MB
 
 
 class RegisterForm(UserCreationForm):
@@ -48,3 +53,35 @@ class ProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['image'].required = False
+
+
+class ProfilePictureForm(forms.Form):
+    """Form for uploading profile pictures."""
+    profile_image = forms.ImageField(
+        required=True,
+        widget=forms.FileInput(attrs={
+            'accept': 'image/jpeg,image/png,image/webp',
+            'class': 'profile-image-input',
+            'id': 'profile-image-input'
+        })
+    )
+
+    def clean_profile_image(self):
+        image = self.cleaned_data.get('profile_image')
+        
+        if not image:
+            raise ValidationError('Please select an image.')
+        
+        # Validate content type
+        if image.content_type not in ALLOWED_IMAGE_TYPES:
+            raise ValidationError(
+                'Invalid image format. Please upload a JPEG, PNG, or WebP image.'
+            )
+        
+        # Validate file size
+        if image.size > MAX_IMAGE_SIZE:
+            raise ValidationError(
+                f'Image too large. Maximum size is 2MB (yours: {image.size / 1024 / 1024:.1f}MB).'
+            )
+        
+        return image

@@ -27,16 +27,31 @@
           {% endif %}
         </ul>
         <div class="ms-auto d-flex align-items-center">
-          <button id="theme-toggle" class="btn-theme-toggle" aria-label="Toggle dark mode">
-            <span class="theme-icon-light">☀️</span>
-            <span class="theme-icon-dark">🌙</span>
-          </button>
           {% if user.is_authenticated %}
-          <span class="navbar-text ms-3">{{ user.username }}</span>
-          <form method="post" action="{% url 'logout' %}" class="d-inline">
-            {% csrf_token %}
-            <button type="submit" class="btn-logout">Logout</button>
-          </form>
+          <div class="user-dropdown">
+            <button class="user-dropdown-trigger" id="user-menu-trigger">
+              {% if user.profile.profile_image %}
+                <img src="{{ user.profile.profile_image.url }}" 
+                     alt="" 
+                     class="navbar-avatar">
+              {% else %}
+                <span class="navbar-initials">{{ user.profile.get_initials }}</span>
+              {% endif %}
+              <span class="user-dropdown-name">{{ user.username }}</span>
+              <span class="user-dropdown-arrow">▼</span>
+            </button>
+            <div class="user-dropdown-menu" id="user-menu">
+              <a href="{% url 'settings' %}" class="user-dropdown-item">
+                Settings
+              </a>
+              <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="user-dropdown-item user-dropdown-logout">
+                  Logout
+                </button>
+              </form>
+            </div>
+          </div>
           {% else %}
           <a class="nav-link ms-2" href="{% url 'login' %}">Login</a>
           {% endif %}
@@ -92,20 +107,9 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
   <script>
-    // Theme toggle functionality
-    const themeToggle = document.getElementById('theme-toggle');
-    const html = document.documentElement;
-    
-    // Check for saved theme preference or default to light
+    // Theme initialization (for pages that need it)
     const savedTheme = localStorage.getItem('theme') || 'light';
-    html.setAttribute('data-theme', savedTheme);
-    
-    themeToggle.addEventListener('click', () => {
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-    });
+    document.documentElement.setAttribute('data-theme', savedTheme);
 
     // Scroll animation observer
     const observer = new IntersectionObserver((entries) => {
@@ -118,6 +122,26 @@
     }, { threshold: 0.15 });
 
     document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
+
+    // User dropdown toggle
+    const userMenuTrigger = document.getElementById('user-menu-trigger');
+    const userMenu = document.getElementById('user-menu');
+    
+    if (userMenuTrigger && userMenu) {
+      userMenuTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userMenu.classList.toggle('show');
+        userMenuTrigger.classList.toggle('active');
+      });
+      
+      // Close on click outside
+      document.addEventListener('click', (e) => {
+        if (!userMenuTrigger.contains(e.target) && !userMenu.contains(e.target)) {
+          userMenu.classList.remove('show');
+          userMenuTrigger.classList.remove('active');
+        }
+      });
+    }
   </script>
 </body>
 

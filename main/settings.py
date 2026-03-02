@@ -166,6 +166,19 @@ STORAGES = {
             "custom_domain": f"{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/product-images",
         },
     },
+    "profile_images": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": "profile-images",
+            "endpoint_url": f"https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3",
+            "access_key": os.getenv('SUPABASE_S3_ACCESS_KEY'),
+            "secret_key": os.getenv('SUPABASE_S3_SECRET_KEY'),
+            "region_name": "us-east-1",
+            "default_acl": "public-read",
+            "querystring_auth": False,
+            "custom_domain": f"{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/profile-images",
+        },
+    },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
