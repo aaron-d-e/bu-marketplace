@@ -31,9 +31,18 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with mebug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', 'bu-marketplace.vercel.app').split(',') if h.strip()]
+# Allow production domain and all Vercel preview URLs (*.vercel.app)
+_allowed = [h.strip() for h in os.getenv('ALLOWED_HOSTS', 'bu-marketplace.vercel.app').split(',') if h.strip()]
+if os.getenv('VERCEL'):
+    _allowed.append('.vercel.app')
+    if os.getenv('VERCEL_URL'):
+        _allowed.append(os.getenv('VERCEL_URL'))
+ALLOWED_HOSTS = _allowed
 
-CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv('CSRF_TRUSTED_ORIGINS', 'https://bu-marketplace.vercel.app').split(',') if o.strip()]
+_origins = [o.strip() for o in os.getenv('CSRF_TRUSTED_ORIGINS', 'https://bu-marketplace.vercel.app').split(',') if o.strip()]
+if os.getenv('VERCEL') and os.getenv('VERCEL_URL'):
+    _origins.append('https://' + os.getenv('VERCEL_URL'))
+CSRF_TRUSTED_ORIGINS = _origins
 
 
 # Application definition
