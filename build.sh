@@ -1,8 +1,7 @@
 #!/bin/bash
 # Build the project (per Medium: Deploying Django to Vercel)
+# Dependencies are installed by Vercel from requirements.txt; do not run pip here (uv-managed env).
 set -e
-echo "Building the project..."
-python -m pip install -r requirements.txt
 echo "Make migrations..."
 python manage.py makemigrations --noinput || true
 python manage.py migrate --noinput
