@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm
-from .models import Product
+from .models import Product, Category
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
@@ -49,8 +49,17 @@ def login_view(request):
     return render(request, 'registration/login.html', {'form': form})
 
 def products(request):
-    products = Product.objects.all()
-    return render(request, 'main/products.html', {'products': products})
+    categories = Category.objects.all().order_by('name')
+    category_id = request.GET.get('category')
+    if category_id:
+        products = Product.objects.filter(category_id=category_id)
+    else:
+        products = Product.objects.all()
+    return render(request, 'main/products.html', {
+        'products': products,
+        'categories': categories,
+        'selected_category_id': category_id,
+    })
 
 @superuser_required
 def create_product(request):

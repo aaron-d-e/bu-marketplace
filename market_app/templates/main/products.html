@@ -11,6 +11,15 @@
     <a href="{% url 'create_product' %}" class="btn btn-primary">Create Product</a>
 </div>
 {% endif %}
+
+<div class="mb-3">
+  <span class="me-2">Filter by category:</span>
+  <a href="{% url 'products' %}" class="btn btn-sm {% if not selected_category_id %}btn-primary{% else %}btn-outline-secondary{% endif %} me-1">All</a>
+  {% for cat in categories %}
+  <a href="{% url 'products' %}?category={{ cat.id }}" class="btn btn-sm {% if selected_category_id == cat.id|stringformat:'s' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-1">{{ cat.name }}</a>
+  {% endfor %}
+</div>
+
 {% if products %}
 
 <div class="products-list">
