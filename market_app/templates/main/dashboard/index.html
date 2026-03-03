@@ -31,23 +31,77 @@
   </div>
 </div>
 
-<!-- Category Distribution -->
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title mb-3">Categories ({{ total_categories }})</h5>
-    {% if categories %}
-    {% for cat in categories %}
-    <div class="category-bar-row">
-      <div class="category-bar-label">{{ cat.name }}</div>
-      <div class="category-bar-track">
-        <div class="category-bar-fill" style="width: {% widthratio cat.product_count total_products 100 %}%;"></div>
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Product Status</h5>
+        <div style="max-height: 220px; display: flex; justify-content: center;">
+          <canvas id="statusChart"></canvas>
+        </div>
       </div>
-      <div class="category-bar-count">{{ cat.product_count }}</div>
     </div>
-    {% endfor %}
-    {% else %}
-    <p class="text-muted mb-0">No categories yet.</p>
-    {% endif %}
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Categories ({{ total_categories }})</h5>
+        {% if categories %}
+        <div style="max-height: 220px; display: flex; justify-content: center;">
+          <canvas id="categoryChart"></canvas>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No categories yet.</p>
+        {% endif %}
+      </div>
+    </div>
   </div>
 </div>
+{% endblock %}
+
+{% block dashboard_js %}
+<script>
+// Product Status Chart (Sold vs Available)
+new Chart(document.getElementById('statusChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Sold', 'Available'],
+    datasets: [{
+      data: [{{ sold_products }}, {{ available_products }}],
+      backgroundColor: ['#154734', '#FFB81C'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom' }
+    }
+  }
+});
+
+{% if categories %}
+// Category Distribution Chart
+new Chart(document.getElementById('categoryChart'), {
+  type: 'doughnut',
+  data: {
+    labels: [{% for cat in categories %}'{{ cat.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+    datasets: [{
+      data: [{% for cat in categories %}{{ cat.product_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+      backgroundColor: ['#154734', '#FFB81C', '#1a5a42', '#d4a017', '#0d2e22', '#2a7d5f', '#e6c547'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom' }
+    }
+  }
+});
+{% endif %}
+</script>
 {% endblock %}

@@ -137,6 +137,7 @@ def dashboard_index(request):
     # Summary stats
     total_products = Product.objects.count()
     sold_products = Product.objects.filter(sold=True).count()
+    available_products = total_products - sold_products
     total_revenue = Product.objects.filter(sold=True).aggregate(total=Sum('price'))['total'] or 0
     total_users = User.objects.count()
     total_categories = Category.objects.count()
@@ -149,6 +150,7 @@ def dashboard_index(request):
     context = {
         'total_products': total_products,
         'sold_products': sold_products,
+        'available_products': available_products,
         'total_revenue': total_revenue,
         'total_users': total_users,
         'total_categories': total_categories,
