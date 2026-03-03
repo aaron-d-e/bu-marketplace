@@ -153,3 +153,7 @@ def policy(request):
 
 def terms(request):
     return render(request, 'main/terms.html')
+
+
+def process_view(request):
+    return render(request, 'main/process.html')

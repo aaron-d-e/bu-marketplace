@@ -15,4 +15,5 @@ urlpatterns = [
     path('mission/', views.mission, name='mission'),
     path('policy/', views.policy, name='policy'),
     path('terms/', views.terms, name='terms'),
+    path('process/', views.process_view, name='process'),
 ]
