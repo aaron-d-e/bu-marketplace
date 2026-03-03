@@ -5,7 +5,7 @@ Django 6 e-commerce platform for Baylor University. Regular users browse/buy pro
 
 ## Tech Stack
 - **Django 6.0.2** with PostgreSQL (Supabase-hosted via `dj-database-url`)
-- **Supabase S3-compatible storage** for product images (bucket: `product-images`)
+- **Supabase S3-compatible storage** for images (buckets: `product-images`, `profile-images`)
 - **Bootstrap 5** (CDN) + **Crispy Forms** for frontend
 - **Email-based auth** via custom `EmailBackend` in `market_app/backends.py`
 
@@ -35,17 +35,24 @@ python manage.py test market_app.tests.ProductImageModelTests.test_product_witho
 
 ### Key Files
 - `main/settings.py` - DB, S3 storage, auth backends
-- `market_app/views.py` - All view functions with `@superuser_required` decorator
+- `market_app/views.py` - All view functions with permission decorators
 - `market_app/backends.py` - Custom `EmailBackend` for email login
 - `market_app/static/css/app.css` - **Single CSS file** (all styles here)
 - `market_app/templates/main/base.html` - Master template
 
 ### Permission Model
 ```python
-# Superuser-only views use this decorator
+# Dashboard views use @staff_required (staff OR superuser)
+def staff_required(view_func):
+    return user_passes_test(lambda u: u.is_staff or u.is_superuser)(view_func)
+
+# For superuser-only views
 def superuser_required(view_func):
     return user_passes_test(lambda u: u.is_superuser)(view_func)
 ```
+
+### User Profiles
+`UserProfile` is auto-created via signal when a `User` is created. Access via `user.profile`.
 
 ### Image Upload Flow
 Form → `create_product` view → `ProductForm.save()` → `django-storages` S3 backend → Supabase bucket
@@ -75,7 +82,7 @@ All custom styles go in `market_app/static/css/app.css`. Do NOT create additiona
 
 ### Views Pattern
 - Function-based views with decorators
-- Use `@superuser_required` for admin-only views
+- Use `@staff_required` for dashboard/admin views (staff or superuser)
 - Use `@login_required` for authenticated views
 
 ## Environment Variables

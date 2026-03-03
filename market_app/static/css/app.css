@@ -1658,3 +1658,96 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Documentation-style dashboard sidebar */
+div.dashboard-layout {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  min-height: calc(100vh - 200px);
+  width: 100%;
+}
+
+aside.dashboard-sidebar {
+  width: 240px !important;
+  min-width: 240px !important;
+  max-width: 240px !important;
+  background: var(--card-bg);
+  border-right: 1px solid var(--bu-green);
+  padding: 1.5rem 0;
+  flex-shrink: 0 !important;
+}
+
+.dashboard-sidebar nav {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.dashboard-sidebar-link {
+  display: block !important;
+  padding: 0.6rem 1.25rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+
+.dashboard-sidebar-link:hover {
+  background: rgba(21, 71, 52, 0.08);
+  color: var(--bu-green);
+  border-left-color: var(--bu-green);
+}
+
+.dashboard-sidebar-link.active {
+  background: rgba(21, 71, 52, 0.1);
+  color: var(--bu-green);
+  font-weight: 600;
+  border-left: 3px solid var(--bu-gold);
+}
+
+main.dashboard-main {
+  flex: 1 1 auto !important;
+  background: var(--bg-primary);
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  div.dashboard-layout {
+    flex-direction: column !important;
+  }
+  aside.dashboard-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    border-right: none;
+    border-bottom: 1px solid var(--bu-green);
+    padding: 0.75rem 0;
+  }
+  .dashboard-sidebar nav {
+    flex-direction: row !important;
+    overflow-x: auto;
+    gap: 0;
+  }
+  .dashboard-sidebar-link {
+    white-space: nowrap;
+    border-left: none !important;
+    border-bottom: 3px solid transparent;
+  }
+  .dashboard-sidebar-link.active {
+    border-left: none !important;
+    border-bottom: 3px solid var(--bu-gold);
+  }
+}
+
+.dashboard-sidebar-header {
+  padding: 0 1.25rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bu-green);
+  border-bottom: 1px solid rgba(21, 71, 52, 0.1);
+  margin-bottom: 0.5rem;
+}

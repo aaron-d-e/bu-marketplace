@@ -4,6 +4,8 @@ from .models import Product, Category
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.db.models import Sum, Count
 from .utils import resize_profile_image
 
 def superuser_required(view_func):

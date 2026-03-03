@@ -1,26 +1,24 @@
-{% extends "main/base.html" %}
-{% block title %}Admin Dashboard{% endblock %}
-{% block content %}
-<div class="container py-4">
-  <h1 class="mb-4">Admin Dashboard</h1>
-  <p class="text-muted mb-4">Manage products and categories for the marketplace.</p>
-  <div class="row g-4">
-    <div class="col-md-6">
-      <div class="card h-100">
-        <div class="card-body">
-          <h5 class="card-title">Products</h5>
-          <p class="card-text">Create, edit, and delete products. Set title, price, category, and image.</p>
-          <a href="{% url 'dashboard_products' %}" class="btn btn-primary">Manage Products</a>
-        </div>
+{% extends "main/dashboard/base.html" %}
+{% block dashboard_title %}Admin Dashboard{% endblock %}
+{% block dashboard_content %}
+<h1 class="mb-3">Overview</h1>
+<p class="text-muted mb-4">Welcome to the admin dashboard. Use the sidebar to manage products and categories.</p>
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Products</h5>
+        <p class="card-text text-muted">Create, edit, and manage marketplace products.</p>
+        <a href="{% url 'dashboard_products' %}" class="btn btn-primary btn-sm">Manage Products</a>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card h-100">
-        <div class="card-body">
-          <h5 class="card-title">Categories</h5>
-          <p class="card-text">Create, edit, and delete categories. Categories appear in the product filter and dropdown.</p>
-          <a href="{% url 'dashboard_categories' %}" class="btn btn-primary">Manage Categories</a>
-        </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Categories</h5>
+        <p class="card-text text-muted">Organize products with categories.</p>
+        <a href="{% url 'dashboard_categories' %}" class="btn btn-primary btn-sm">Manage Categories</a>
       </div>
     </div>
   </div>
