@@ -1,26 +1,53 @@
 {% extends "main/dashboard/base.html" %}
 {% block dashboard_title %}Admin Dashboard{% endblock %}
 {% block dashboard_content %}
-<h1 class="mb-3">Overview</h1>
-<p class="text-muted mb-4">Welcome to the admin dashboard. Use the sidebar to manage products and categories.</p>
-<div class="row g-4">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Products</h5>
-        <p class="card-text text-muted">Create, edit, and manage marketplace products.</p>
-        <a href="{% url 'dashboard_products' %}" class="btn btn-primary btn-sm">Manage Products</a>
-      </div>
+<h1 class="mb-4">Overview</h1>
+
+<!-- Summary Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-value">{{ total_products }}</div>
+      <div class="stat-label">Products</div>
     </div>
   </div>
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Categories</h5>
-        <p class="card-text text-muted">Organize products with categories.</p>
-        <a href="{% url 'dashboard_categories' %}" class="btn btn-primary btn-sm">Manage Categories</a>
-      </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-value">{{ sold_products }}</div>
+      <div class="stat-label">Sold</div>
     </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-value">${{ total_revenue|floatformat:0 }}</div>
+      <div class="stat-label">Revenue</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-value">{{ total_users }}</div>
+      <div class="stat-label">Users</div>
+    </div>
+  </div>
+</div>
+
+<!-- Category Distribution -->
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Categories ({{ total_categories }})</h5>
+    {% if categories %}
+    {% for cat in categories %}
+    <div class="category-bar-row">
+      <div class="category-bar-label">{{ cat.name }}</div>
+      <div class="category-bar-track">
+        <div class="category-bar-fill" style="width: {% widthratio cat.product_count total_products 100 %}%;"></div>
+      </div>
+      <div class="category-bar-count">{{ cat.product_count }}</div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-muted mb-0">No categories yet.</p>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
