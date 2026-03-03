@@ -4,6 +4,8 @@ from .models import Product, Category
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.db.models import Sum, Count
 from .utils import resize_profile_image
 
 def superuser_required(view_func):
@@ -132,7 +134,29 @@ def staff_required(view_func):
 
 @staff_required
 def dashboard_index(request):
-    return render(request, 'main/dashboard/index.html')
+    # Summary stats
+    total_products = Product.objects.count()
+    sold_products = Product.objects.filter(sold=True).count()
+    available_products = total_products - sold_products
+    total_revenue = Product.objects.filter(sold=True).aggregate(total=Sum('price'))['total'] or 0
+    total_users = User.objects.count()
+    total_categories = Category.objects.count()
+    
+    # Category distribution
+    categories = Category.objects.annotate(
+        product_count=Count('product')
+    ).order_by('-product_count')
+    
+    context = {
+        'total_products': total_products,
+        'sold_products': sold_products,
+        'available_products': available_products,
+        'total_revenue': total_revenue,
+        'total_users': total_users,
+        'total_categories': total_categories,
+        'categories': categories,
+    }
+    return render(request, 'main/dashboard/index.html', context)
 
 
 @staff_required
