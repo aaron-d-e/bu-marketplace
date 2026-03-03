@@ -29,7 +29,7 @@
             <div class="info-card-front">
               <img src="{% static 'images/Who.jpg' %}" alt="Who" class="info-card-img">
               <h3>WHO</h3>
-              <p class="info-hint">Hover to learn more</p>
+              <p class="info-hint">Click to learn more</p>
             </div>
             <div class="info-card-back">
               <h4>For Baylor Students</h4>
@@ -46,7 +46,7 @@
             <div class="info-card-front">
               <img src="{% static 'images/why.jpg' %}" alt="Why" class="info-card-img">
               <h3>WHY</h3>
-              <p class="info-hint">Hover to learn more</p>
+              <p class="info-hint">Click to learn more</p>
             </div>
             <div class="info-card-back">
               <h4>Sustainability & Savings</h4>
@@ -63,7 +63,7 @@
             <div class="info-card-front">
               <img src="{% static 'images/for.jpg' %}" alt="For" class="info-card-img">
               <h3>FOR</h3>
-              <p class="info-hint">Hover to learn more</p>
+              <p class="info-hint">Click to learn more</p>
             </div>
             <div class="info-card-back">
               <h4>Dorm Essentials</h4>
@@ -150,4 +150,14 @@
   </div>
 </section>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.querySelectorAll('.info-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      this.classList.toggle('flipped');
+    });
+  });
+</script>
 {% endblock %}
