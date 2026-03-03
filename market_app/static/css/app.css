@@ -1811,3 +1811,45 @@ main.dashboard-main {
   color: var(--text-secondary);
   text-align: right;
 }
+
+/* Dashboard dark mode overrides */
+[data-theme="dark"] .stat-card {
+  border-color: var(--bu-gold);
+}
+
+[data-theme="dark"] .stat-value {
+  color: var(--bu-gold);
+}
+
+[data-theme="dark"] .dashboard-sidebar {
+  background: var(--bg-secondary);
+  border-right-color: var(--bu-gold);
+}
+
+[data-theme="dark"] .dashboard-sidebar-header {
+  color: var(--bu-gold);
+  border-bottom-color: rgba(255, 184, 28, 0.2);
+}
+
+[data-theme="dark"] .dashboard-sidebar-link {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .dashboard-sidebar-link:hover {
+  background: rgba(255, 184, 28, 0.1);
+  color: var(--bu-gold);
+  border-left-color: var(--bu-gold);
+}
+
+[data-theme="dark"] .dashboard-sidebar-link.active {
+  background: rgba(255, 184, 28, 0.15);
+  color: var(--bu-gold);
+}
+
+[data-theme="dark"] .category-bar-track {
+  background: rgba(255, 184, 28, 0.15);
+}
+
+[data-theme="dark"] .category-bar-fill {
+  background: var(--bu-gold);
+}

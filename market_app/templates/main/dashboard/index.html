@@ -62,6 +62,13 @@
 
 {% block dashboard_js %}
 <script>
+// Detect theme for chart colors
+const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+const chartColors = isDark 
+  ? ['#FFB81C', '#1a5a42', '#d4a017', '#22755a', '#e6c547', '#2a7d5f', '#f5d280']
+  : ['#154734', '#FFB81C', '#1a5a42', '#d4a017', '#0d2e22', '#2a7d5f', '#e6c547'];
+const labelColor = isDark ? '#e8efe8' : '#333333';
+
 // Product Status Chart (Sold vs Available)
 new Chart(document.getElementById('statusChart'), {
   type: 'doughnut',
@@ -69,7 +76,7 @@ new Chart(document.getElementById('statusChart'), {
     labels: ['Sold', 'Available'],
     datasets: [{
       data: [{{ sold_products }}, {{ available_products }}],
-      backgroundColor: ['#154734', '#FFB81C'],
+      backgroundColor: isDark ? ['#1a5a42', '#FFB81C'] : ['#154734', '#FFB81C'],
       borderWidth: 0
     }]
   },
@@ -77,7 +84,10 @@ new Chart(document.getElementById('statusChart'), {
     responsive: true,
     maintainAspectRatio: true,
     plugins: {
-      legend: { position: 'bottom' }
+      legend: { 
+        position: 'bottom',
+        labels: { color: labelColor }
+      }
     }
   }
 });
@@ -90,7 +100,7 @@ new Chart(document.getElementById('categoryChart'), {
     labels: [{% for cat in categories %}'{{ cat.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
     datasets: [{
       data: [{% for cat in categories %}{{ cat.product_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-      backgroundColor: ['#154734', '#FFB81C', '#1a5a42', '#d4a017', '#0d2e22', '#2a7d5f', '#e6c547'],
+      backgroundColor: chartColors,
       borderWidth: 0
     }]
   },
@@ -98,7 +108,10 @@ new Chart(document.getElementById('categoryChart'), {
     responsive: true,
     maintainAspectRatio: true,
     plugins: {
-      legend: { position: 'bottom' }
+      legend: { 
+        position: 'bottom',
+        labels: { color: labelColor }
+      }
     }
   }
 });
