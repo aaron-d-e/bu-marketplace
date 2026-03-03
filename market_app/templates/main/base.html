@@ -28,6 +28,11 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'process' %}">The Process</a>
           </li>
+          {% if user.is_staff or user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin_dashboard' %}">Admin</a>
+          </li>
+          {% endif %}
         </ul>
         <div class="ms-auto d-flex align-items-center">
           {% if user.is_authenticated %}

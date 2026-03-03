@@ -62,6 +62,12 @@ class ProductForm(forms.ModelForm):
         self.fields['category'].queryset = Category.objects.all().order_by('name')
 
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+
+
 class ProfilePictureForm(forms.Form):
     """Form for uploading profile pictures."""
     profile_image = forms.ImageField(

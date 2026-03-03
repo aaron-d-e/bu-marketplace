@@ -2,16 +2,6 @@
 {% block title %} Products {%endblock%}
 {% block content %}
 <h1>Products</h1>
-{% if user.is_superuser %}
-<p>You are a superuser</p>
-{% endif %}
-
-{% if user.is_superuser %}
-<div>
-    <a href="{% url 'create_product' %}" class="btn btn-primary">Create Product</a>
-</div>
-{% endif %}
-
 <div class="mb-3">
   <span class="me-2">Filter by category:</span>
   <a href="{% url 'products' %}" class="btn btn-sm {% if not selected_category_id %}btn-primary{% else %}btn-outline-secondary{% endif %} me-1">All</a>
@@ -39,11 +29,6 @@
         {% endif %}
         {% if product.sold %}
         <span class="sold-badge">Sold</span>
-        {% endif %}
-
-        {% if user.is_superuser %}
-        <a href="{% url 'edit_product' product.id %}" class="btn btn-primary">Edit</a>
-        <a href="{% url 'delete_product' product.id %}" class="btn btn-danger">Delete</a>
         {% endif %}
     </div>
     {% endif %}
