@@ -1,34 +1,31 @@
-{% extends "main/base.html"%}
-{% block title %} Products {%endblock%}
-{% block content %}
-<h1>Products</h1>
-<div class="mb-3">
-  <span class="me-2">Filter by category:</span>
-  <a href="{% url 'products' %}" class="btn btn-sm {% if not selected_category_id %}btn-primary{% else %}btn-outline-secondary{% endif %} me-1">All</a>
-  {% for cat in categories %}
-  <a href="{% url 'products' %}?category={{ cat.id }}" class="btn btn-sm {% if selected_category_id == cat.id|stringformat:'s' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-1">{{ cat.name }}</a>
-  {% endfor %}
-</div>
+{% extends "main/products/base.html" %}
+{% block products_title %}Products{% endblock %}
+{% block products_content %}
+<h1 class="mb-4">Products</h1>
 
 {% if products %}
-
 <div class="products-list">
     {% for product in products %}
     {% if not product.sold %} 
-    <div class="product-card">
+    <div class="product-card" 
+         data-product-id="{{ product.id }}"
+         data-product-title="{{ product.title }}"
+         data-product-price="{{ product.price }}"
+         data-product-description="{{ product.description|default:'' }}"
+         data-product-category="{{ product.category.name|default:'' }}"
+         data-product-image="{% if product.image %}{{ product.image.url }}{% endif %}"
+         onclick="openProductModal(this)">
         {% if product.image %}
         <img src="{{ product.image.url }}" alt="{{ product.title }}">
+        {% else %}
+        <div class="product-card-placeholder">
+          <span>No Image</span>
+        </div>
         {% endif %}
+        <p class="price">${{ product.price }}</p>
         <h3>{{ product.title }}</h3>
         {% if product.category %}
         <p class="product-category text-muted small mb-1">{{ product.category.name }}</p>
-        {% endif %}
-        <p class="price">${{ product.price }}</p>
-        {% if product.description %}
-        <p class="description">{{ product.description }}</p>
-        {% endif %}
-        {% if product.sold %}
-        <span class="sold-badge">Sold</span>
         {% endif %}
     </div>
     {% endif %}
@@ -37,4 +34,69 @@
 {% else %}
 <p>No products available.</p>
 {% endif %}
+
+<!-- Product Detail Modal -->
+<div class="product-modal-overlay" id="product-modal" onclick="closeProductModal(event)">
+  <div class="product-modal" onclick="event.stopPropagation()">
+    <button class="product-modal-close" onclick="closeProductModal()" aria-label="Close">&times;</button>
+    <div class="product-modal-content">
+      <div class="product-modal-image">
+        <img id="modal-image" src="" alt="">
+        <div class="product-modal-placeholder" id="modal-placeholder">
+          <span>No Image</span>
+        </div>
+      </div>
+      <div class="product-modal-details">
+        <p class="product-modal-price" id="modal-price"></p>
+        <h2 class="product-modal-title" id="modal-title"></h2>
+        <span class="product-modal-category" id="modal-category"></span>
+        <div class="product-modal-description" id="modal-description"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block products_js %}
+<script>
+function openProductModal(card) {
+  const modal = document.getElementById('product-modal');
+  const image = document.getElementById('modal-image');
+  const placeholder = document.getElementById('modal-placeholder');
+  
+  // Populate modal with product data
+  document.getElementById('modal-title').textContent = card.dataset.productTitle;
+  document.getElementById('modal-price').textContent = '$' + card.dataset.productPrice;
+  document.getElementById('modal-description').textContent = card.dataset.productDescription;
+  document.getElementById('modal-category').textContent = card.dataset.productCategory;
+  
+  // Handle image
+  if (card.dataset.productImage) {
+    image.src = card.dataset.productImage;
+    image.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    image.style.display = 'none';
+    placeholder.style.display = 'flex';
+  }
+  
+  // Show modal
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal(event) {
+  // If called from overlay click, only close if clicking the overlay itself
+  if (event && event.target !== event.currentTarget) return;
+  
+  const modal = document.getElementById('product-modal');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close on ESC key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeProductModal();
+});
+</script>
 {% endblock %}
