@@ -1751,3 +1751,63 @@ main.dashboard-main {
   border-bottom: 1px solid rgba(21, 71, 52, 0.1);
   margin-bottom: 0.5rem;
 }
+
+/* Dashboard stat cards */
+.stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--bu-green);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--bu-green);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Category distribution bars */
+.category-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.category-bar-label {
+  width: 120px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.category-bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(21, 71, 52, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.category-bar-fill {
+  height: 100%;
+  background: var(--bu-green);
+  border-radius: 4px;
+  min-width: 4px;
+}
+
+.category-bar-count {
+  width: 30px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
