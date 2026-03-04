@@ -9,7 +9,6 @@ def get_profile_storage():
     """Return the profile_images storage backend."""
     return storages["profile_images"]
 
-
 class Product(models.Model):
     # many products connected to one user
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
@@ -44,7 +43,7 @@ class Inquiry(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     make = models.CharField(max_length=100, null=False)
     model = models.CharField(max_length=100, null=False)
-    year = models.IntegerField(null=True)
+    years_of_use = models.IntegerField(null=True)
     category = models.ForeignKey('Category', null=True, on_delete=models.CASCADE)
     condition = models.CharField(max_length=20, choices=ProductCondition.choices, default=ProductCondition.GOOD)
     created_at = models.DateTimeField(auto_now_add=True)
