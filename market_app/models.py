@@ -43,9 +43,9 @@ class Inquiry(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     make = models.CharField(max_length=100, null=False)
     model = models.CharField(max_length=100, null=False)
-    years_of_use = models.IntegerField(null=True)
     category = models.ForeignKey('Category', null=True, on_delete=models.CASCADE)
     condition = models.CharField(max_length=20, choices=ProductCondition.choices, default=ProductCondition.GOOD)
+    price = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

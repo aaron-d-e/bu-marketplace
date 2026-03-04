@@ -16,6 +16,6 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Inquiry)
 class InquiryAdmin(admin.ModelAdmin):
-    list_display = ('make', 'model', 'years_of_use', 'category', 'condition', 'user', 'created_at')
+    list_display = ('make', 'model', 'category', 'condition', 'price', 'user', 'created_at')
     list_filter = ('category', 'condition')
     search_fields = ('make', 'model')

@@ -61,7 +61,6 @@ def inquiry_view(request):
                 prompt = (
                     f"Generate me a price quote for the following product. Find the wholesale value and return me 50% of that value in a single number without any text or symbols attached)."
                     f"Product: {inquiry.make} {inquiry.model}"
-                    f"Years of use: {inquiry.years_of_use}"
                     f"Condition: {inquiry.condition}"
                     f"Category: {inquiry.category}"
                     f"Once again, reply with a single number without any text or symbols attached. Dont attach a dollar sign. Use a single number."
