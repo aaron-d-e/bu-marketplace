@@ -1,0 +1,56 @@
+{% extends "main/base.html" %}
+{% block title %}{% block products_title %}Products{% endblock %}{% endblock %}
+
+{% block fullwidth_content %}
+<div class="products-layout">
+  <aside class="products-sidebar">
+    <div class="products-sidebar-header">Shop</div>
+    
+    <!-- Search -->
+    <div class="products-sidebar-search">
+      <input type="text" 
+             id="product-search" 
+             placeholder="Search products..." 
+             class="form-control">
+    </div>
+    
+    <!-- Categories -->
+    <nav class="products-sidebar-nav">
+      <a href="{% url 'products' %}" 
+         class="products-sidebar-link{% if not selected_category_id %} active{% endif %}">
+        All Products
+      </a>
+      {% for cat in categories %}
+      <a href="{% url 'products' %}?category={{ cat.id }}" 
+         class="products-sidebar-link{% if selected_category_id == cat.id|stringformat:'s' %} active{% endif %}">
+        {{ cat.name }}
+      </a>
+      {% endfor %}
+    </nav>
+  </aside>
+  
+  <main class="products-main">
+    <div class="container-fluid py-4 px-4">
+      {% block products_content %}{% endblock %}
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Product search filter (client-side)
+const searchInput = document.getElementById('product-search');
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    document.querySelectorAll('.product-card').forEach(card => {
+      const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+      const desc = card.querySelector('.description')?.textContent.toLowerCase() || '';
+      card.style.display = (title.includes(query) || desc.includes(query)) ? '' : 'none';
+    });
+  });
+}
+</script>
+{% block products_js %}{% endblock %}
+{% endblock %}
