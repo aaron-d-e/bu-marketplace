@@ -1,10 +1,48 @@
-{% extends "main/base.html"%}
-{% block title %} Inquiry {%endblock%}
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}Free AI Quote{% endblock %}
 {% block content %}
-<h1>Inquiry</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+<div class="static-page inquiry-page">
+  <h1 class="page-title">Free AI Quote</h1>
+  <p class="lead text-center mb-4">Get an accurate quote for your item. We’ll use AI to estimate what we can offer.</p>
+
+  <div class="content-card inquiry-form-card">
+    {% if messages %}
+    <div class="mb-3">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <form method="post" id="inquiry-form" action="{% url 'inquiry' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-inquiry-submit" id="inquiry-submit-btn">Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="inquiry-loading-overlay" id="inquiry-loading" aria-hidden="true">
+    <div class="inquiry-loading-content">
+      <div class="inquiry-loading-spinner"></div>
+      <p class="inquiry-loading-text">Getting your quote…</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+  var form = document.getElementById('inquiry-form');
+  var overlay = document.getElementById('inquiry-loading');
+  if (form && overlay) {
+    form.addEventListener('submit', function() {
+      overlay.classList.add('is-visible');
+      overlay.setAttribute('aria-hidden', 'false');
+    });
+  }
+})();
+</script>
 {% endblock %}

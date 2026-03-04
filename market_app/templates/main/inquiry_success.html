@@ -1,0 +1,28 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}Quote Received{% endblock %}
+{% block content %}
+<div class="static-page inquiry-success-page">
+  <div class="content-card inquiry-success-card text-center">
+    <div class="inquiry-success-icon" aria-hidden="true">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+    </div>
+    <h1 class="page-title inquiry-success-title">Success</h1>
+    <p class="inquiry-success-message">Your quote is ready.</p>
+    {% if inquiry.price is not None %}
+    <p class="inquiry-quote-price">${{ inquiry.price }}</p>
+    <p class="inquiry-quote-label">Your estimated quote</p>
+    {% else %}
+    <p class="inquiry-quote-price">—</p>
+    <p class="inquiry-quote-label">Quote could not be generated</p>
+    {% endif %}
+    <div class="inquiry-success-next">
+      <p class="inquiry-next-copy">Next step: submit a short video of your item so we can confirm condition and approve your listing.</p>
+      <a href="{% url 'inquiry_video' inquiry.pk %}" class="btn btn-inquiry-video">Submit a video</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
