@@ -41,11 +41,12 @@ class ProductCondition(models.TextChoices):
     POOR = 'poor'
 
 class Inquiry(models.Model):
-    make = models.CharField(max_length=100, null=False),
-    model = models.CharField(max_length=100, null=False),
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    make = models.CharField(max_length=100, null=False)
+    model = models.CharField(max_length=100, null=False)
     year = models.IntegerField(null=True)
     category = models.ForeignKey('Category', null=True, on_delete=models.CASCADE)
-    condition = models.CharField(max_length=10, choices=ProductCondition.choices, default=ProductCondition.GOOD)
+    condition = models.CharField(max_length=20, choices=ProductCondition.choices, default=ProductCondition.GOOD)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

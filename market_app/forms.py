@@ -3,8 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from .models import Product, Category
-
+from .models import Product, Category, Inquiry, ProductCondition
 
 ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 MAX_IMAGE_SIZE = 2 * 1024 * 1024  # 2MB
@@ -24,6 +23,17 @@ class RegisterForm(UserCreationForm):
             raise forms.ValidationError('Please use a Baylor email address.')
         return email
 
+# form that connects to the inquiry model
+class InquiryForm(forms.ModelForm):
+    class Meta:
+        model = Inquiry
+        fields = ['make', 'model', 'year', 'category', 'condition']
+
+        def clean_condition(self):
+            condition = self.cleaned_data.get('condition')
+            if condition not in ProductCondition.values:
+                raise forms.ValidationError('Invalid condition.')
+            return condition
 
 class EmailLoginForm(forms.Form):
     """Login with email and password (uses EmailBackend)."""

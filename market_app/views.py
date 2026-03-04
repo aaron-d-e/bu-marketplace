@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm, CategoryForm
+from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm, CategoryForm, InquiryForm
 from .models import Product, Category
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
@@ -33,6 +33,19 @@ def sign_up(request):
         form = RegisterForm()
 
     return render(request, 'registration/sign_up.html', {'form': form})
+
+
+def inquiry_view(request):
+    if request.method == 'POST':
+        form = InquiryForm(request.POST)
+        if form.is_valid():
+            inquiry = form.save(commit=False)
+            inquiry.user = request.user
+            inquiry.save()
+            return redirect('home')
+    else:
+        form = InquiryForm()
+    return render(request, 'main/inquiry.html', {'form': form})
 
 
 def login_view(request):

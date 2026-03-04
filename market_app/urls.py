@@ -13,6 +13,8 @@ urlpatterns = [
     path('policy/', views.policy, name='policy'),
     path('terms/', views.terms, name='terms'),
     path('process/', views.process_view, name='process'),
+    path('inquiry/', views.inquiry_view, name='inquiry'),
+
     # Admin dashboard (products + categories CRUD)
     path('dashboard/', views.dashboard_index, name='admin_dashboard'),
     path('dashboard/products/', views.dashboard_products, name='dashboard_products'),
