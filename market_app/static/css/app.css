@@ -1548,6 +1548,78 @@ body {
   color: var(--bu-gold);
 }
 
+/* Process / How it Works timeline */
+.static-page .process-timeline {
+  padding: 2rem 2.5rem 2.5rem;
+}
+
+.process-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step;
+}
+
+.process-step {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding-bottom: 2rem;
+  position: relative;
+}
+
+.process-step:last-child {
+  padding-bottom: 0;
+}
+
+.process-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 1.1rem;
+  top: 2.75rem;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--bu-green), rgba(21, 71, 52, 0.2));
+  border-radius: 1px;
+}
+
+[data-theme="dark"] .process-step:not(:last-child)::after {
+  background: linear-gradient(to bottom, var(--bu-gold), rgba(255, 184, 28, 0.2));
+}
+
+.process-step .step-number {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--bu-green);
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  counter-increment: step;
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="dark"] .process-step .step-number {
+  background: var(--bu-gold);
+  color: var(--bg-primary);
+}
+
+.process-step .step-content h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.process-step .step-content p {
+  margin-bottom: 0;
+  color: var(--text-primary);
+}
+
 /* ===== LEADERSHIP PAGE ===== */
 
 .leadership-page {
