@@ -14,7 +14,7 @@
       {% endfor %}
     </div>
     {% endif %}
-    <form method="post" id="inquiry-form" action="{% url 'inquiry' %}">
+    <form method="post" id="inquiry-form" class="inquiry-form" action="{% url 'inquiry' %}">
       {% csrf_token %}
       {{ form.as_p }}
       <div class="form-actions">

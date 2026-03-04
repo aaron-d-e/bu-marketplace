@@ -6,9 +6,6 @@
     <h1 class="mb-0">Manage Products</h1>
     <a href="{% url 'dashboard_product_create' %}" class="btn btn-primary">Add Product</a>
   </div>
-  {% if messages %}
-  <div class="alert alert-success alert-dismissible fade show">{% for message in messages %}{{ message }}{% endfor %}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-  {% endif %}
   <div class="card">
     <div class="card-body">
       {% if products %}

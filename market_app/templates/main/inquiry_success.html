@@ -15,6 +15,7 @@
     {% if inquiry.price is not None %}
     <p class="inquiry-quote-price">${{ inquiry.price }}</p>
     <p class="inquiry-quote-label">Your estimated quote</p>
+    <p class="inquiry-quote-disclaimer">We reserve the right to deviate from this price.</p>
     {% else %}
     <p class="inquiry-quote-price">—</p>
     <p class="inquiry-quote-label">Quote could not be generated</p>
@@ -22,6 +23,9 @@
     <div class="inquiry-success-next">
       <p class="inquiry-next-copy">Next step: submit a short video of your item so we can confirm condition and approve your listing.</p>
       <a href="{% url 'inquiry_video' inquiry.pk %}" class="btn btn-inquiry-video">Submit a video</a>
+      <p class="inquiry-back-home mt-3 mb-0">
+        <a href="{% url 'home' %}" class="btn-back-home">Back to home</a>
+      </p>
     </div>
   </div>
 </div>

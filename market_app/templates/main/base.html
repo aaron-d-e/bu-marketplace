@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <title>{% block title %}My Site{% endblock %}</title>
 </head>
-<body>
+<body class="site-body {% if 'dashboard' in request.resolver_match.url_name|default:'' or 'category_' in request.resolver_match.url_name|default:'' %}admin-panel{% endif %}">
   <nav class="navbar navbar-expand-lg navbar-bu">
     <div class="container-fluid">
       <div class="d-flex w-100 align-items-center">
@@ -71,22 +71,24 @@
       </div>
     </div>
   </nav>
-  {% block fullwidth_content %}
-  <div class="container">
-    {% if messages %}
-    <div class="mt-3">
-      {% for message in messages %}
-      <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <main class="site-main">
+    {% block fullwidth_content %}
+    <div class="container">
+      {% if messages %}
+      <div class="mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+      {% endif %}
+      {% block content %}
+      {% endblock %}
     </div>
-    {% endif %}
-    {% block content %}
     {% endblock %}
-  </div>
-  {% endblock %}
+  </main>
 
   <footer class="footer-bu">
     <div class="container">
@@ -162,6 +164,16 @@
           userMenu.classList.remove('show');
           userMenuTrigger.classList.remove('active');
         }
+      });
+    }
+
+    // Admin panel: auto-dismiss success/error messages after 2 seconds
+    if (document.body.classList.contains('admin-panel')) {
+      document.querySelectorAll('.alert.alert-dismissible').forEach(function(alertEl) {
+        setTimeout(function() {
+          var alert = bootstrap.Alert.getOrCreateInstance(alertEl);
+          alert.close();
+        }, 2000);
       });
     }
   </script>

@@ -46,6 +46,17 @@ body {
   transition: background-color 0.3s ease;
 }
 
+/* Sticky footer: body is a flex column, main content grows to push footer to bottom */
+.site-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.site-main {
+  flex: 1 0 auto;
+}
+
 /* Navbar styles */
 .navbar-bu {
   background: var(--bu-green) !important;
@@ -1627,6 +1638,61 @@ body {
   margin: 0 auto;
 }
 
+/* Inquiry form fields – match site theme (login-form style) */
+.inquiry-form p {
+  margin-bottom: 1.25rem;
+}
+
+.inquiry-form label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.inquiry-form input[type="text"],
+.inquiry-form select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inquiry-form input[type="text"]:focus,
+.inquiry-form select:focus {
+  outline: none;
+  border-color: var(--bu-gold);
+  box-shadow: 0 0 0 3px rgba(255, 184, 28, 0.2);
+}
+
+[data-theme="dark"] .inquiry-form input[type="text"],
+[data-theme="dark"] .inquiry-form select {
+  border-color: #3a4a44;
+  background: var(--bg-primary);
+}
+
+[data-theme="dark"] .inquiry-form input[type="text"]:focus,
+[data-theme="dark"] .inquiry-form select:focus {
+  border-color: var(--bu-gold);
+}
+
+.inquiry-form .errorlist {
+  margin: 0.25rem 0 0;
+  padding-left: 1rem;
+  color: #dc3545;
+  font-size: 0.875rem;
+  list-style: none;
+}
+
+[data-theme="dark"] .inquiry-form .errorlist {
+  color: #f87171;
+}
+
 .inquiry-page .form-actions {
   margin-top: 1.5rem;
 }
@@ -1749,7 +1815,14 @@ body {
 .inquiry-quote-label {
   font-size: 0.9rem;
   color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.inquiry-quote-disclaimer {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
   margin-bottom: 1.5rem;
+  opacity: 0.9;
 }
 
 .inquiry-success-next {
@@ -1768,30 +1841,50 @@ body {
   line-height: 1.5;
 }
 
-.btn-inquiry-video {
+/* Override .static-page a so button text is visible (same specificity as .static-page a) */
+.static-page .btn-inquiry-video {
   display: inline-block;
   background: var(--bu-green);
-  color: white;
+  color: white !important;
   padding: 0.65rem 1.5rem;
   border-radius: 8px;
   font-weight: 600;
   text-decoration: none;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.btn-inquiry-video:hover {
+.static-page .btn-inquiry-video:hover {
   background: var(--bu-green-hover);
-  color: white;
+  color: white !important;
 }
 
-[data-theme="dark"] .btn-inquiry-video {
+[data-theme="dark"] .static-page .btn-inquiry-video {
   background: var(--bu-gold);
+  color: var(--bu-green) !important;
+}
+
+[data-theme="dark"] .static-page .btn-inquiry-video:hover {
+  background: #e6a619;
+  color: var(--bu-green) !important;
+}
+
+.static-page .btn-back-home {
+  font-size: 0.95rem;
+  text-decoration: none;
   color: var(--bu-green);
 }
 
-[data-theme="dark"] .btn-inquiry-video:hover {
-  background: #e6a619;
-  color: var(--bu-green);
+.static-page .btn-back-home:hover {
+  color: var(--bu-green-hover);
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .static-page .btn-back-home {
+  color: var(--bu-gold);
+}
+
+[data-theme="dark"] .static-page .btn-back-home:hover {
+  color: #e6a619;
 }
 
 /* ===== LEADERSHIP PAGE ===== */

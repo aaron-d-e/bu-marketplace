@@ -1,3 +1,7 @@
+import logging
+import os
+import re
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm, CategoryForm, InquiryForm
 from .models import Product, Category, Inquiry
@@ -5,11 +9,11 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from .utils import resize_profile_image
-import os
-import re
 from google import genai
 from dotenv import load_dotenv
+
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 # initialize google genai client
 
@@ -78,7 +82,8 @@ def inquiry_view(request):
                     inquiry.save()
                 return redirect('inquiry_success', inquiry_id=inquiry.pk)
             except Exception as e:
-                messages.error(request, f'Error getting quote: {e}')
+                logger.exception('Quote generation failed for inquiry pk=%s', inquiry.pk)
+                messages.error(request, 'We couldn’t get a quote right now. Please try again later.')
     else:
         form = InquiryForm()
     return render(request, 'main/inquiry.html', {'form': form})
@@ -111,15 +116,23 @@ def login_view(request):
 
 def products(request):
     categories = Category.objects.all().order_by('name')
-    category_id = request.GET.get('category')
-    if category_id:
-        products = Product.objects.filter(category_id=category_id)
+    category_id_raw = request.GET.get('category')
+    selected_category_id = None
+    if category_id_raw is not None:
+        try:
+            pk = int(category_id_raw)
+            if Category.objects.filter(pk=pk).exists():
+                selected_category_id = pk
+        except (ValueError, TypeError):
+            pass
+    if selected_category_id is not None:
+        products = Product.objects.filter(category_id=selected_category_id)
     else:
         products = Product.objects.all()
     return render(request, 'main/products.html', {
         'products': products,
         'categories': categories,
-        'selected_category_id': category_id,
+        'selected_category_id': selected_category_id,
     })
 
 
