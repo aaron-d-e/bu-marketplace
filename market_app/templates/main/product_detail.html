@@ -1,0 +1,116 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}{{ product.title }}{% endblock %}
+
+{% block content %}
+<div class="product-detail-page">
+  <div class="container">
+    <nav class="product-detail-nav">
+      <a href="{% url 'home' %}" class="back-link" aria-label="Back">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+      </a>
+    </nav>
+
+    <div class="product-detail-grid">
+      <!-- Left Column -->
+      <div class="product-detail-left">
+        <div class="product-detail-image-container">
+          {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-detail-image">
+          {% else %}
+          <div class="product-detail-placeholder">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
+          {% endif %}
+          <span class="product-detail-badge">Good</span>
+        </div>
+
+        <div class="product-info-card">
+          <h1 class="product-detail-title">{{ product.title }}</h1>
+          <p class="product-detail-meta">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Listed {{ product.created_at|timesince }} ago
+          </p>
+
+          {% if product.description %}
+          <div class="product-description-section">
+            <h3>Description</h3>
+            <p>{{ product.description }}</p>
+          </div>
+          {% endif %}
+
+          <div class="product-attributes">
+            {% if product.category %}
+            <div class="product-attribute">
+              <span class="attribute-label">Category</span>
+              <span class="attribute-value">{{ product.category.name }}</span>
+            </div>
+            {% endif %}
+            <div class="product-attribute">
+              <span class="attribute-label">Condition</span>
+              <span class="attribute-value">Good</span>
+            </div>
+          </div>
+
+          <div class="delivery-section">
+            <h3>Delivery Options</h3>
+            <div class="delivery-badges">
+              <span class="delivery-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                Pickup Available
+              </span>
+            </div>
+            <div class="pickup-location">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <div>
+                <span class="pickup-label">Pickup Location</span>
+                <span class="pickup-value">Baylor University Campus</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right Column - Buy Card -->
+      <div class="product-detail-right">
+        <div class="buy-card">
+          <div class="buy-card-body">
+            <div class="price-display">
+              <span class="price-label">Price</span>
+              <span class="price-amount">${{ product.price|floatformat:2 }}</span>
+            </div>
+            <button class="buy-now-btn" disabled title="Coming soon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="4" width="22" height="16" rx="2"/>
+                <line x1="1" y1="10" x2="23" y2="10"/>
+              </svg>
+              Buy Now &middot; ${{ product.price|floatformat:2 }}
+            </button>
+            <p class="buy-disclaimer">Pickup at Baylor campus or delivery for a premium.</p>
+          </div>
+        </div>
+        <p class="back-to-home">
+          <a href="{% url 'home' %}">Back to home</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

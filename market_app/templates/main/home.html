@@ -142,6 +142,9 @@
     </div>
     
     <div class="products-grid" id="products-grid">
+      <div class="no-items-match" id="no-items-match" style="display: none;">
+        <p>There are no items that match this description.</p>
+      </div>
       {% for product in products %}
       <a href="{% url 'product_detail' product.pk %}" class="product-card-link">
         <div class="product-card" data-category="{% if product.category %}{{ product.category.id }}{% else %}0{% endif %}">
@@ -159,12 +162,6 @@
             {% endif %}
             <div class="product-badges">
               <span class="product-badge badge-condition">Good</span>
-              <span class="product-badge badge-type">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                  <rect x="3" y="3" width="18" height="18" rx="2"/>
-                </svg>
-                Buy Now
-              </span>
             </div>
           </div>
           <div class="product-info">
@@ -270,24 +267,42 @@
     });
   });
 
+  function updateNoItemsMessage() {
+    var productLinks = document.querySelectorAll('.product-card-link');
+    var activePill = document.querySelector('.category-pill.active');
+    var category = activePill ? activePill.dataset.category : 'all';
+    var searchQuery = (document.querySelector('.search-input') && document.querySelector('.search-input').value || '').trim().toLowerCase();
+    var visibleCount = 0;
+    productLinks.forEach(function(link) {
+      if (link.style.display !== 'none') visibleCount++;
+    });
+    var noMatchEl = document.getElementById('no-items-match');
+    if (noMatchEl) {
+      var filterActive = category !== 'all' || searchQuery !== '';
+      noMatchEl.style.display = (filterActive && visibleCount === 0) ? '' : 'none';
+    }
+  }
+
   // Category filter
   document.querySelectorAll('.category-pill').forEach(function(pill) {
     pill.addEventListener('click', function() {
-      // Update active state
       document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
       this.classList.add('active');
 
       const category = this.dataset.category;
       const productLinks = document.querySelectorAll('.product-card-link');
+      const searchInput = document.querySelector('.search-input');
+      const query = (searchInput && searchInput.value || '').trim().toLowerCase();
 
       productLinks.forEach(function(link) {
         const product = link.querySelector('.product-card');
-        if (category === 'all' || product.dataset.category === category) {
-          link.style.display = '';
-        } else {
-          link.style.display = 'none';
-        }
+        const matchesCategory = category === 'all' || product.dataset.category === category;
+        const title = (product.querySelector('.product-title') || {}).textContent || '';
+        const location = (product.querySelector('.product-location') || {}).textContent || '';
+        const matchesSearch = !query || title.toLowerCase().includes(query) || location.toLowerCase().includes(query);
+        link.style.display = (matchesCategory && matchesSearch) ? '' : 'none';
       });
+      updateNoItemsMessage();
     });
   });
 
@@ -297,17 +312,18 @@
     searchInput.addEventListener('input', function() {
       const query = this.value.toLowerCase();
       const productLinks = document.querySelectorAll('.product-card-link');
+      const activePill = document.querySelector('.category-pill.active');
+      const category = activePill ? activePill.dataset.category : 'all';
 
       productLinks.forEach(function(link) {
         const product = link.querySelector('.product-card');
-        const title = product.querySelector('.product-title').textContent.toLowerCase();
-        const location = product.querySelector('.product-location').textContent.toLowerCase();
-        if (title.includes(query) || location.includes(query)) {
-          link.style.display = '';
-        } else {
-          link.style.display = 'none';
-        }
+        const matchesCategory = category === 'all' || product.dataset.category === category;
+        const title = (product.querySelector('.product-title') || {}).textContent || '';
+        const location = (product.querySelector('.product-location') || {}).textContent || '';
+        const matchesSearch = !query || title.toLowerCase().includes(query) || location.toLowerCase().includes(query);
+        link.style.display = (matchesCategory && matchesSearch) ? '' : 'none';
       });
+      updateNoItemsMessage();
     });
   }
 </script>
