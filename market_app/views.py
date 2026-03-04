@@ -1,10 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm, CategoryForm
+from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm, CategoryForm, InquiryForm
 from .models import Product, Category
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from .utils import resize_profile_image
+import os
+from google import genai
+from dotenv import load_dotenv
+from django.http import HttpResponse
+load_dotenv()
+
+# initialize google genai client
 
 def superuser_required(view_func):
     return user_passes_test(lambda u: u.is_superuser)(view_func)
@@ -38,6 +45,40 @@ def sign_up(request):
         form = RegisterForm()
 
     return render(request, 'registration/sign_up.html', {'form': form})
+
+
+def inquiry_view(request):
+    if request.method == 'POST':
+        form = InquiryForm(request.POST)
+        if form.is_valid():
+            inquiry = form.save(commit=False)
+            inquiry.user = request.user
+            inquiry.save()
+
+            # call openai api to get a quote
+            try:
+                client = genai.Client(api_key=os.getenv('GOOGLE_API_KEY'))
+                prompt = (
+                    f"Generate me a price quote for the following product. Find the wholesale value and return me 50% of that value in a single number without any text or symbols attached)."
+                    f"Product: {inquiry.make} {inquiry.model}"
+                    f"Years of use: {inquiry.years_of_use}"
+                    f"Condition: {inquiry.condition}"
+                    f"Category: {inquiry.category}"
+                    f"Once again, reply with a single number without any text or symbols attached. Dont attach a dollar sign. Use a single number."
+                )
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt
+                )
+                client.close()
+                response_text = response.text.strip()
+                return HttpResponse(response_text)
+            except Exception as e:
+                messages.error(request, f'Error getting quote: {e}')
+                return HttpResponse(f"Error getting quote: {e}")
+    else:
+        form = InquiryForm()
+    return render(request, 'main/inquiry.html', {'form': form})
 
 
 def login_view(request):
