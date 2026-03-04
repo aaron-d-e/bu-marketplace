@@ -31,8 +31,28 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.name
 
+# enum for product condition
+class ProductCondition(models.TextChoices):
+    NEW = 'new'
+    USED = 'used'
+    LIKE_NEW = 'like new'
+    GOOD = 'good'
+    FAIR = 'fair'
+    POOR = 'poor'
+
+class Inquiry(models.Model):
+    make = models.CharField(max_length=100, null=False),
+    model = models.CharField(max_length=100, null=False),
+    year = models.IntegerField(null=True)
+    category = models.ForeignKey('Category', null=True, on_delete=models.CASCADE)
+    condition = models.CharField(max_length=10, choices=ProductCondition.choices, default=ProductCondition.GOOD)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
 
 class UserProfile(models.Model):
+
     """Extended user profile with profile picture support."""
     user = models.OneToOneField(
         User,
