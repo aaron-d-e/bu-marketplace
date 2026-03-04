@@ -70,6 +70,13 @@ body {
   margin-right: 0.5rem;
 }
 
+.navbar-logo {
+  height: 28px !important;
+  width: auto;
+  max-height: 28px;
+  transition: transform 0.3s ease;
+}
+
 /* Theme toggle button */
 .btn-theme-toggle {
   background: rgba(255, 255, 255, 0.1);

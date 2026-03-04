@@ -12,7 +12,12 @@ def superuser_required(view_func):
     return user_passes_test(lambda u: u.is_superuser)(view_func)
 
 def home(request):
-    return render(request, 'main/home.html')
+    categories = Category.objects.all().order_by('name')
+    products = Product.objects.filter(sold=False).order_by('-created_at')
+    return render(request, 'main/home.html', {
+        'categories': categories,
+        'products': products,
+    })
 
 
 def sign_up(request):
@@ -62,6 +67,11 @@ def products(request):
         'categories': categories,
         'selected_category_id': category_id,
     })
+
+
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, 'main/product_detail.html', {'product': product})
 
 
 
