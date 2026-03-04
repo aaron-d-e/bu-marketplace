@@ -114,18 +114,6 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-def _env(key, default=None):
-    """Get env var and strip optional surrounding quotes."""
-    val = os.getenv(key, default)
-    if val is None or not isinstance(val, str):
-        return val
-    val = val.strip()
-    if (len(val) >= 2 and
-            ((val[0] == "'" and val[-1] == "'") or (val[0] == '"' and val[-1] == '"'))):
-        return val[1:-1].strip()
-    return val
-
-
 # On Vercel static build (build.sh runs migrate/collectstatic), use SQLite so we don't
 # need the Postgres driver during build. At runtime (wsgi) we use Postgres from DATABASE_URL.
 if os.getenv('VERCEL') and len(sys.argv) > 1 and sys.argv[1] in ('collectstatic', 'migrate', 'makemigrations'):

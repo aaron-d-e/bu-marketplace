@@ -15,17 +15,18 @@ from dotenv import load_dotenv
 load_dotenv()
 logger = logging.getLogger(__name__)
 
-# initialize google genai client
-
-def superuser_required(view_func):
-    return user_passes_test(lambda u: u.is_superuser)(view_func)
 
 def home(request):
     categories = Category.objects.all().order_by('name')
     products = Product.objects.filter(sold=False).order_by('-created_at')
+    items_listed_count = products.count()
+    # Placeholder until checkout process: total $ students have saved using the marketplace
+    total_savings = 0
     return render(request, 'main/home.html', {
         'categories': categories,
         'products': products,
+        'items_listed_count': items_listed_count,
+        'total_savings': total_savings,
     })
 
 
