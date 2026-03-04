@@ -13,4 +13,4 @@ python-dotenv==1.2.1    # helps read local env vars
 sqlparse==0.5.5
 whitenoise==6.6.0
 openai==1.66.1
-google-genai
+google-genai==1.65.0
