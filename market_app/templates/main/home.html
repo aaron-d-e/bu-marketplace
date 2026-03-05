@@ -73,7 +73,16 @@
               </svg>
             </div>
             <span class="stat-number stat-amount">${{ total_savings|floatformat:0 }}</span>
-            <span class="stat-label">Saved</span>
+            <span class="stat-label">Students Saved</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <span class="stat-number">{{ inquiry_count }}</span>
+            <span class="stat-label">Quotes Requested</span>
           </div>
           {% comment %} Live Auctions card - uncomment when auction feature is ready
           <div class="stat-card">

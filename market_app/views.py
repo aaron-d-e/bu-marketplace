@@ -20,12 +20,14 @@ def home(request):
     categories = Category.objects.all().order_by('name')
     products = Product.objects.filter(sold=False).order_by('-created_at')
     items_listed_count = products.count()
+    inquiry_count = Inquiry.objects.count()
     # Placeholder until checkout process: total $ students have saved using the marketplace
     total_savings = 0
     return render(request, 'main/home.html', {
         'categories': categories,
         'products': products,
         'items_listed_count': items_listed_count,
+        'inquiry_count': inquiry_count,
         'total_savings': total_savings,
     })
 
