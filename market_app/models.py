@@ -34,7 +34,6 @@ class Category(models.Model):
 # enum for product condition
 class ProductCondition(models.TextChoices):
     NEW = 'new'
-    USED = 'used'
     LIKE_NEW = 'like new'
     GOOD = 'good'
     FAIR = 'fair'
@@ -45,6 +44,7 @@ class Inquiry(models.Model):
     make = models.CharField(max_length=100, null=False)
     model = models.CharField(max_length=100, null=False)
     category = models.ForeignKey('Category', null=True, on_delete=models.CASCADE)
+    uploaded_video = models.BooleanField(default=False)
     condition = models.CharField(max_length=20, choices=ProductCondition.choices, default=ProductCondition.GOOD)
     price = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)

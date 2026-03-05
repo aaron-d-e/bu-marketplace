@@ -57,6 +57,11 @@ def sign_up(request):
 
 
 @login_required
+def user_items(request):
+    inquiries = Inquiry.objects.filter(user=request.user).select_related('category').order_by('-created_at')
+    return render(request, 'main/user_items.html', {'inquiries': inquiries})
+
+@login_required
 def inquiry_view(request):
     if request.method == 'POST':
         form = InquiryForm(request.POST)

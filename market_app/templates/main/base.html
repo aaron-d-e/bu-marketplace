@@ -60,6 +60,9 @@
               <a href="{% url 'settings' %}" class="user-dropdown-item">
                 Settings
               </a>
+              <a href="{% url 'user_items' %}" class="user-dropdown-item">
+                  My Items
+              </a>
               <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="user-dropdown-item user-dropdown-logout">
