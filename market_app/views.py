@@ -3,8 +3,8 @@ import os
 import re
 
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm, CategoryForm, InquiryForm
-from .models import Product, Category, Inquiry
+from .forms import RegisterForm, EmailLoginForm, ProductForm, ProductImagesForm, ProfilePictureForm, CategoryForm, InquiryForm
+from .models import Product, ProductImage, Category, Inquiry
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.models import User
@@ -249,16 +249,31 @@ def dashboard_products(request):
 @staff_required
 def dashboard_product_create(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
+        form = ProductForm(request.POST)
+        images_form = ProductImagesForm(request.POST, request.FILES)
+        if form.is_valid() and images_form.is_valid():
             product = form.save(commit=False)
             product.user = request.user
             product.save()
+            
+            # Save uploaded images
+            files = images_form.cleaned_data.get('images', [])
+            for position, image_file in enumerate(files):
+                ProductImage.objects.create(
+                    product=product,
+                    image=image_file,
+                    position=position
+                )
+            
             messages.success(request, 'Product created.')
             return redirect('dashboard_products')
     else:
         form = ProductForm()
-    return render(request, 'main/dashboard/product_create.html', {'form': form})
+        images_form = ProductImagesForm()
+    return render(request, 'main/dashboard/product_create.html', {
+        'form': form,
+        'images_form': images_form,
+    })
 
 
 @staff_required
