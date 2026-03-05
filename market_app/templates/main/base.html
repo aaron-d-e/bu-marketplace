@@ -22,7 +22,7 @@
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="navbar-brand" href="{% url 'home' %}">
-              <img src="{% static 'images/BU_BrandMark_Horz_White.png' %}" alt="S.H.A.R.E Bear Logo" class="navbar-logo" style="height: 28px; width: auto;">
+              <img src="{% static 'images/baylor-logo.png' %}" alt="Baylor University Logo" class="navbar-logo" style="height: 36px; width: auto;">
             </a>
           </li>
           <li class="nav-item">
@@ -59,6 +59,9 @@
             <div class="user-dropdown-menu" id="user-menu">
               <a href="{% url 'settings' %}" class="user-dropdown-item">
                 Settings
+              </a>
+              <a href="{% url 'user_items' %}" class="user-dropdown-item">
+                  My Items
               </a>
               <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
@@ -107,8 +110,7 @@
         <div class="col-md-3 col-6 mb-3">
           <h6>Support</h6>
           <ul class="list-unstyled">
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">FAQ</a></li>
+            <li><a href="{% url 'leadership' %}">Contact Us</a></li>
           </ul>
         </div>
         <div class="col-md-3 col-6 mb-3">

@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}My Items{% endblock %}
+
+{% block content %}
+<div class="user-items-page">
+  <h1 class="user-items-title">My Items</h1>
+  <p class="user-items-lead">Inquiries you’ve submitted and their quotes. Submit a video when you’re ready for the next step.</p>
+
+  {% if inquiries %}
+  <div class="user-items-list">
+    {% for inquiry in inquiries %}
+    <div class="user-item-card">
+      <div class="user-item-info">
+        <div class="user-item-main">
+          <span class="user-item-make-model">{{ inquiry.make }} {{ inquiry.model }}</span>
+          {% if inquiry.category %}
+          <span class="user-item-category">{{ inquiry.category.name }}</span>
+          {% endif %}
+        </div>
+        <div class="user-item-details">
+          <span class="user-item-detail">Condition: {{ inquiry.condition }}</span>
+          <span class="user-item-detail">Quote: {% if inquiry.price is not None %}${{ inquiry.price }}{% else %}—{% endif %}</span>
+          <span class="user-item-date">Submitted {{ inquiry.created_at|date:"M j, Y" }}</span>
+        </div>
+      </div>
+      <div class="user-item-action">
+        {% if inquiry.uploaded_video %}
+        <span class="user-item-status">Item processing</span>
+        {% else %}
+        <a href="{% url 'inquiry_video' inquiry.pk %}" class="btn-user-item-submit">Submit video</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="user-items-empty">
+    <p>You haven’t submitted any inquiries yet.</p>
+    <a href="{% url 'inquiry' %}" class="btn-user-items-cta">Get a free quote</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

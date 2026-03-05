@@ -8,6 +8,8 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('products/', views.products, name='products'),
     path('products/<int:pk>/', views.product_detail, name='product_detail'),
+    path('products/<int:pk>/checkout/', views.checkout, name='checkout'),
+    path('purchase/thank-you/', views.purchase_thank_you, name='purchase_thank_you'),
     path('settings/', views.settings_view, name='settings'),
     path('leadership/', views.leadership, name='leadership'),
     path('mission/', views.mission, name='mission'),
@@ -17,6 +19,7 @@ urlpatterns = [
     path('inquiry/', views.inquiry_view, name='inquiry'),
     path('inquiry/success/<int:inquiry_id>/', views.inquiry_success, name='inquiry_success'),
     path('inquiry/<int:inquiry_id>/video/', views.inquiry_video, name='inquiry_video'),
+    path('user_items/', views.user_items, name='user_items'),
 
     # Admin dashboard (products + categories CRUD)
     path('dashboard/', views.dashboard_index, name='admin_dashboard'),

@@ -72,8 +72,17 @@
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
               </svg>
             </div>
-            <span class="stat-number stat-amount">${{ total_savings|floatformat:0 }}</span>
-            <span class="stat-label">Saved</span>
+            <span class="stat-number stat-amount">${{ total_sales_volume|floatformat:0 }}</span>
+            <span class="stat-label">Total Volume (Sold)</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <span class="stat-number">{{ inquiry_count }}</span>
+            <span class="stat-label">Quotes Requested</span>
           </div>
           {% comment %} Live Auctions card - uncomment when auction feature is ready
           <div class="stat-card">
@@ -101,13 +110,6 @@
         <path d="M21 21l-4.35-4.35"/>
       </svg>
       <input type="text" class="search-input" placeholder="Search for items...">
-      <button class="search-filter-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="4" y1="6" x2="20" y2="6"/>
-          <line x1="6" y1="12" x2="18" y2="12"/>
-          <line x1="8" y1="18" x2="16" y2="18"/>
-        </svg>
-      </button>
     </div>
     
     <!-- Category Pills -->
@@ -182,59 +184,31 @@
   </div>
 </section>
 
-<div class="homepage-bg">
-<!-- Interactive Info Cards -->
-<section class="info-cards">
+<!-- Baylor Image Carousel -->
+<section class="baylor-carousel-section">
   <div class="container">
-    <div class="row g-4">
-      <!-- WHO Card -->
-      <div class="col-md-4">
-        <div class="info-card scroll-animate" data-delay="1" tabindex="0">
-          <div class="info-card-inner">
-            <div class="info-card-front">
-              <img src="{% static 'images/Who.jpg' %}" alt="Who" class="info-card-img">
-              <h3>WHO</h3>
-              <p class="info-hint">Click to learn more</p>
-            </div>
-            <div class="info-card-back">
-              <h4>For Baylor Students</h4>
-              <p>A marketplace exclusively for the Baylor community. Students helping students find what they need at prices they can afford.</p>
-            </div>
-          </div>
+    <div class="baylor-carousel">
+      <div class="carousel-track">
+        <div class="carousel-slide active">
+          <img src="{% static 'images/garden-planting.jpg' %}" alt="Students planting in community garden">
         </div>
-      </div>
-
-      <!-- WHY Card -->
-      <div class="col-md-4">
-        <div class="info-card scroll-animate" data-delay="2" tabindex="0">
-          <div class="info-card-inner">
-            <div class="info-card-front">
-              <img src="{% static 'images/why.jpg' %}" alt="Why" class="info-card-img">
-              <h3>WHY</h3>
-              <p class="info-hint">Click to learn more</p>
-            </div>
-            <div class="info-card-back">
-              <h4>Sustainability & Savings</h4>
-              <p>Every year, students throw away perfectly good dorm essentials. We rescue them, giving items a second life while saving you money.</p>
-            </div>
-          </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/research-lab.jpg' %}" alt="Baylor research lab">
         </div>
-      </div>
-
-      <!-- FOR Card -->
-      <div class="col-md-4">
-        <div class="info-card scroll-animate" data-delay="3" tabindex="0">
-          <div class="info-card-inner">
-            <div class="info-card-front">
-              <img src="{% static 'images/for.jpg' %}" alt="For" class="info-card-img">
-              <h3>FOR</h3>
-              <p class="info-hint">Click to learn more</p>
-            </div>
-            <div class="info-card-back">
-              <h4>Dorm Essentials</h4>
-              <p>Mini-fridges, microwaves, storage bins, furniture, decor, and more. Everything you need to make your dorm feel like home.</p>
-            </div>
-          </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/composting.jpg' %}" alt="Students composting at community garden">
+        </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/tree-campus.jpg' %}" alt="Baylor Tree Campus">
+        </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/Who.jpg' %}" alt="Baylor Students">
+        </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/why.jpg' %}" alt="Sustainability">
+        </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/for.jpg' %}" alt="Dorm Essentials">
         </div>
       </div>
     </div>
@@ -247,25 +221,92 @@
     <div class="mission-content scroll-animate">
       <h2>Our Mission</h2>
       <p class="mission-text">
-        At S.H.A.R.E Bear, we believe no usable item should end up in a landfill. 
-        We connect Baylor students with affordable, pre-loved dorm essentials — 
+        At S.H.A.R.E Bear (Sustainable Holistic Affordable Reusable Essentials), we believe no usable item should end up in a landfill. 
+        We connect Baylor University students with affordable, pre-loved dorm essentials — 
         promoting sustainability, reducing waste, and building community one item at a time.
+        Through our platform, students can buy, sell, and donate items, keeping resources in circulation 
+        and making college life more affordable and environmentally responsible.
       </p>
     </div>
   </div>
 </section>
-
-</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Info card flip
-  document.querySelectorAll('.info-card').forEach(function(card) {
-    card.addEventListener('click', function() {
-      this.classList.toggle('flipped');
+  // Baylor Image Carousel (Infinite/Auto-scroll only)
+  (function() {
+    const carousel = document.querySelector('.baylor-carousel');
+    if (!carousel) return;
+    
+    const track = carousel.querySelector('.carousel-track');
+    const originalSlides = Array.from(carousel.querySelectorAll('.carousel-slide'));
+    
+    const totalOriginal = originalSlides.length;
+    const AUTO_SCROLL_DELAY = 5000; // 5 seconds
+    
+    // Clone slides for infinite loop: [clone last 2] [originals] [clone first 2]
+    const clonesPerSide = 2;
+    
+    // Clone last slides and prepend
+    for (let i = totalOriginal - 1; i >= totalOriginal - clonesPerSide; i--) {
+      const clone = originalSlides[i].cloneNode(true);
+      clone.classList.add('clone');
+      track.insertBefore(clone, track.firstChild);
+    }
+    
+    // Clone first slides and append
+    for (let i = 0; i < clonesPerSide; i++) {
+      const clone = originalSlides[i].cloneNode(true);
+      clone.classList.add('clone');
+      track.appendChild(clone);
+    }
+    
+    const allSlides = carousel.querySelectorAll('.carousel-slide');
+    let currentIndex = clonesPerSide; // Start at first real slide
+    
+    // Calculate slide width including gap
+    function getSlideOffset() {
+      const slide = allSlides[0];
+      const gap = 20; // matches CSS gap
+      return slide.offsetWidth + gap;
+    }
+    
+    function updateActiveStates() {
+      allSlides.forEach((slide, i) => slide.classList.toggle('active', i === currentIndex));
+    }
+    
+    function goToSlide(index, animate = true) {
+      currentIndex = index;
+      const offset = getSlideOffset() * currentIndex;
+      
+      if (animate) {
+        track.style.transition = 'transform 0.5s ease-in-out';
+      } else {
+        track.style.transition = 'none';
+      }
+      track.style.transform = `translateX(-${offset}px)`;
+      updateActiveStates();
+    }
+    
+    // Handle infinite loop jump after transition
+    track.addEventListener('transitionend', () => {
+      if (currentIndex < clonesPerSide) {
+        goToSlide(totalOriginal + currentIndex, false);
+      }
+      if (currentIndex >= totalOriginal + clonesPerSide) {
+        goToSlide(currentIndex - totalOriginal, false);
+      }
     });
-  });
+    
+    function nextSlide() {
+      goToSlide(currentIndex + 1);
+    }
+    
+    // Initialize and start auto-scroll
+    goToSlide(currentIndex, false);
+    setInterval(nextSlide, AUTO_SCROLL_DELAY);
+  })();
 
   function updateNoItemsMessage() {
     var productLinks = document.querySelectorAll('.product-card-link');

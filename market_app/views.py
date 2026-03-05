@@ -7,7 +7,9 @@ from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm
 from .models import Product, Category, Inquiry
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db.models import Count, Sum
 from .utils import resize_profile_image
 from google import genai
 from dotenv import load_dotenv
@@ -19,14 +21,17 @@ logger = logging.getLogger(__name__)
 def home(request):
     categories = Category.objects.all().order_by('name')
     products = Product.objects.filter(sold=False).order_by('-created_at')
-    items_listed_count = products.count()
-    # Placeholder until checkout process: total $ students have saved using the marketplace
-    total_savings = 0
+    items_listed_count = products.count() or 0  # Demo placeholder
+    inquiry_count = Inquiry.objects.count() or 128  # Demo placeholder
+    total_sales_volume = Product.objects.filter(sold=True).aggregate(
+        total=Sum('price')
+    )['total'] or 0
     return render(request, 'main/home.html', {
         'categories': categories,
         'products': products,
         'items_listed_count': items_listed_count,
-        'total_savings': total_savings,
+        'inquiry_count': inquiry_count,
+        'total_sales_volume': total_sales_volume,
     })
 
 
@@ -51,6 +56,11 @@ def sign_up(request):
 
     return render(request, 'registration/sign_up.html', {'form': form})
 
+
+@login_required
+def user_items(request):
+    inquiries = Inquiry.objects.filter(user=request.user).select_related('category').order_by('-created_at')
+    return render(request, 'main/user_items.html', {'inquiries': inquiries})
 
 @login_required
 def inquiry_view(request):
@@ -141,6 +151,29 @@ def product_detail(request, pk):
     return render(request, 'main/product_detail.html', {'product': product})
 
 
+@login_required
+def checkout(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if product.sold:
+        messages.warning(request, 'That item has already been sold.')
+        return redirect('product_detail', pk=pk)
+
+    if request.method == 'POST':
+        # Mock payment:w
+        #: processing - mark product as sold
+        product.sold = True
+        product.save()
+        request.session['purchase_title'] = product.title
+        return redirect('purchase_thank_you')
+
+    return render(request, 'main/checkout.html', {'product': product})
+
+
+@login_required
+def purchase_thank_you(request):
+    title = request.session.pop('purchase_title', None)
+    return render(request, 'main/purchase_thank_you.html', {'purchase_title': title})
+
 
 @login_required
 def settings_view(request):
@@ -211,7 +244,29 @@ def staff_required(view_func):
 
 @staff_required
 def dashboard_index(request):
-    return render(request, 'main/dashboard/index.html')
+    # Summary stats
+    total_products = Product.objects.count()
+    sold_products = Product.objects.filter(sold=True).count()
+    available_products = total_products - sold_products
+    total_revenue = Product.objects.filter(sold=True).aggregate(total=Sum('price'))['total'] or 0
+    total_users = User.objects.count()
+    total_categories = Category.objects.count()
+    
+    # Category distribution
+    categories = Category.objects.annotate(
+        product_count=Count('product')
+    ).order_by('-product_count')
+    
+    context = {
+        'total_products': total_products,
+        'sold_products': sold_products,
+        'available_products': available_products,
+        'total_revenue': total_revenue,
+        'total_users': total_users,
+        'total_categories': total_categories,
+        'categories': categories,
+    }
+    return render(request, 'main/dashboard/index.html', context)
 
 
 @staff_required
