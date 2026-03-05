@@ -19,6 +19,10 @@
 source .venv/bin/activate
 python manage.py runserver              # http://127.0.0.1:8000
 
+# First-time setup (new clone)
+./scripts/setup_env.sh                  # Creates venv, installs deps
+./scripts/setup_postgres_user.sh        # Creates local postgres user/db (if using local DB)
+
 # Database
 python manage.py makemigrations
 python manage.py migrate
@@ -182,3 +186,13 @@ GOOGLE_API_KEY            # For Gemini AI price quotes
 DEBUG                     # "true" for development
 ALLOWED_HOSTS             # comma-separated, defaults to bu-marketplace.vercel.app
 ```
+
+## Testing Patterns
+Tests mock S3 storage to avoid external calls:
+```python
+@patch('storages.backends.s3.S3Storage.save')
+def test_with_image(self, mock_save):
+    mock_save.return_value = 'filename.jpg'
+    # ... test code
+```
+Use `create_test_image()` helper from `tests.py` for image upload tests.
