@@ -158,7 +158,10 @@
       <a href="{% url 'product_detail' product.pk %}" class="product-card-link">
         <div class="product-card" data-category="{% if product.category %}{{ product.category.id }}{% else %}0{% endif %}">
           <div class="product-image-container">
-            {% if product.image %}
+            {% with primary_image=product.get_primary_image %}
+            {% if primary_image %}
+            <img src="{{ primary_image.image.url }}" alt="{{ product.title }}" class="product-image">
+            {% elif product.image %}
             <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-image">
             {% else %}
             <div class="product-image-placeholder">
@@ -169,6 +172,7 @@
               </svg>
             </div>
             {% endif %}
+            {% endwith %}
             <div class="product-badges">
               <span class="product-badge badge-condition">Good</span>
             </div>

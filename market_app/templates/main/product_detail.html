@@ -18,8 +18,11 @@
       <!-- Left Column -->
       <div class="product-detail-left">
         <div class="product-detail-image-container">
-          {% if product.image %}
-          <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-detail-image">
+          {% with primary_image=product.get_primary_image %}
+          {% if primary_image %}
+          <img src="{{ primary_image.image.url }}" alt="{{ product.title }}" class="product-detail-image" id="main-product-image">
+          {% elif product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-detail-image" id="main-product-image">
           {% else %}
           <div class="product-detail-placeholder">
             <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -29,8 +32,21 @@
             </svg>
           </div>
           {% endif %}
+          {% endwith %}
           <span class="product-detail-badge">Good</span>
         </div>
+
+        <!-- Image Thumbnails -->
+        {% if product.images.count > 1 %}
+        <div class="product-thumbnails d-flex gap-2 mt-2">
+          {% for img in product.images.all %}
+          <img src="{{ img.image.url }}" alt="Thumbnail {{ forloop.counter }}" 
+               class="product-thumbnail {% if forloop.first %}active{% endif %}"
+               onclick="document.getElementById('main-product-image').src='{{ img.image.url }}'; document.querySelectorAll('.product-thumbnail').forEach(t=>t.classList.remove('active')); this.classList.add('active');"
+               style="width: 60px; height: 60px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 4px;">
+          {% endfor %}
+        </div>
+        {% endif %}
 
         <div class="product-info-card">
           <h1 class="product-detail-title">{{ product.title }}</h1>
