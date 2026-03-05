@@ -318,6 +318,19 @@ def dashboard_product_delete(request, pk):
 
 
 @staff_required
+def dashboard_product_image_delete(request, pk, image_pk):
+    """Delete a single image from a product."""
+    product = get_object_or_404(Product, pk=pk)
+    image = get_object_or_404(ProductImage, pk=image_pk, product=product)
+    if request.method == 'POST':
+        image.image.delete(save=False)  # Delete from Supabase
+        image.delete()
+        messages.success(request, 'Image deleted.')
+        return redirect('dashboard_product_edit', pk=pk)
+    return redirect('dashboard_product_edit', pk=pk)
+
+
+@staff_required
 def dashboard_categories(request):
     category_list = Category.objects.order_by('name')
     return render(request, 'main/dashboard/categories.html', {'categories': category_list})
