@@ -218,25 +218,6 @@
           <img src="{% static 'images/for.jpg' %}" alt="Dorm Essentials">
         </div>
       </div>
-      <button class="carousel-arrow carousel-arrow-left" aria-label="Previous slide">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
-      </button>
-      <button class="carousel-arrow carousel-arrow-right" aria-label="Next slide">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="9 6 15 12 9 18"/>
-        </svg>
-      </button>
-    </div>
-    <div class="carousel-dots">
-      <button class="carousel-dot active" data-index="0" aria-label="Go to slide 1"></button>
-      <button class="carousel-dot" data-index="1" aria-label="Go to slide 2"></button>
-      <button class="carousel-dot" data-index="2" aria-label="Go to slide 3"></button>
-      <button class="carousel-dot" data-index="3" aria-label="Go to slide 4"></button>
-      <button class="carousel-dot" data-index="4" aria-label="Go to slide 5"></button>
-      <button class="carousel-dot" data-index="5" aria-label="Go to slide 6"></button>
-      <button class="carousel-dot" data-index="6" aria-label="Go to slide 7"></button>
     </div>
   </div>
 </section>
@@ -258,20 +239,15 @@
 
 {% block extra_js %}
 <script>
-  // Baylor Image Carousel (Infinite/Circular)
+  // Baylor Image Carousel (Infinite/Auto-scroll only)
   (function() {
-    const carouselSection = document.querySelector('.baylor-carousel-section');
     const carousel = document.querySelector('.baylor-carousel');
     if (!carousel) return;
     
     const track = carousel.querySelector('.carousel-track');
     const originalSlides = Array.from(carousel.querySelectorAll('.carousel-slide'));
-    const dots = carouselSection.querySelectorAll('.carousel-dot');
-    const prevBtn = carousel.querySelector('.carousel-arrow-left');
-    const nextBtn = carousel.querySelector('.carousel-arrow-right');
     
     const totalOriginal = originalSlides.length;
-    let autoScrollInterval;
     const AUTO_SCROLL_DELAY = 5000; // 5 seconds
     
     // Clone slides for infinite loop: [clone last 2] [originals] [clone first 2]
@@ -302,13 +278,7 @@
     }
     
     function updateActiveStates() {
-      // Map to original index for dots
-      let realIndex = currentIndex - clonesPerSide;
-      if (realIndex < 0) realIndex = totalOriginal + realIndex;
-      if (realIndex >= totalOriginal) realIndex = realIndex - totalOriginal;
-      
       allSlides.forEach((slide, i) => slide.classList.toggle('active', i === currentIndex));
-      dots.forEach((dot, i) => dot.classList.toggle('active', i === realIndex));
     }
     
     function goToSlide(index, animate = true) {
@@ -326,11 +296,9 @@
     
     // Handle infinite loop jump after transition
     track.addEventListener('transitionend', () => {
-      // If at clone of last slide (before first), jump to real last
       if (currentIndex < clonesPerSide) {
         goToSlide(totalOriginal + currentIndex, false);
       }
-      // If at clone of first slide (after last), jump to real first
       if (currentIndex >= totalOriginal + clonesPerSide) {
         goToSlide(currentIndex - totalOriginal, false);
       }
@@ -340,39 +308,9 @@
       goToSlide(currentIndex + 1);
     }
     
-    function prevSlide() {
-      goToSlide(currentIndex - 1);
-    }
-    
-    function startAutoScroll() {
-      stopAutoScroll();
-      autoScrollInterval = setInterval(nextSlide, AUTO_SCROLL_DELAY);
-    }
-    
-    function stopAutoScroll() {
-      clearInterval(autoScrollInterval);
-    }
-    
-    // Event listeners
-    prevBtn.addEventListener('click', () => { stopAutoScroll(); prevSlide(); startAutoScroll(); });
-    nextBtn.addEventListener('click', () => { stopAutoScroll(); nextSlide(); startAutoScroll(); });
-    dots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        stopAutoScroll();
-        goToSlide(clonesPerSide + parseInt(dot.dataset.index));
-        startAutoScroll();
-      });
-    });
-    
-    // Pause on hover
-    carousel.addEventListener('mouseenter', stopAutoScroll);
-    carousel.addEventListener('mouseleave', startAutoScroll);
-    
-    // Initialize: position at first real slide
+    // Initialize and start auto-scroll
     goToSlide(currentIndex, false);
-    
-    // Start auto-scroll
-    startAutoScroll();
+    setInterval(nextSlide, AUTO_SCROLL_DELAY);
   })();
 
   function updateNoItemsMessage() {
