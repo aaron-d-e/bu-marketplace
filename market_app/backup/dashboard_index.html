@@ -1,0 +1,120 @@
+{% extends "main/dashboard/base.html" %}
+{% block dashboard_title %}Admin Dashboard{% endblock %}
+{% block dashboard_content %}
+<h1 class="mb-4">Overview</h1>
+
+<!-- Summary Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-value">{{ total_products }}</div>
+      <div class="stat-label">Products</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-value">{{ sold_products }}</div>
+      <div class="stat-label">Sold</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-value">${{ total_revenue|floatformat:0 }}</div>
+      <div class="stat-label">Revenue</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-value">{{ total_users }}</div>
+      <div class="stat-label">Users</div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Product Status</h5>
+        <div style="max-height: 220px; display: flex; justify-content: center;">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Categories ({{ total_categories }})</h5>
+        {% if categories %}
+        <div style="max-height: 220px; display: flex; justify-content: center;">
+          <canvas id="categoryChart"></canvas>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No categories yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block dashboard_js %}
+<script>
+// Detect theme for chart colors
+const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+const chartColors = isDark 
+  ? ['#FFB81C', '#1a5a42', '#d4a017', '#22755a', '#e6c547', '#2a7d5f', '#f5d280']
+  : ['#154734', '#FFB81C', '#1a5a42', '#d4a017', '#0d2e22', '#2a7d5f', '#e6c547'];
+const labelColor = isDark ? '#e8efe8' : '#333333';
+
+// Product Status Chart (Sold vs Available)
+new Chart(document.getElementById('statusChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Sold', 'Available'],
+    datasets: [{
+      data: [{{ sold_products }}, {{ available_products }}],
+      backgroundColor: isDark ? ['#1a5a42', '#FFB81C'] : ['#154734', '#FFB81C'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { 
+        position: 'bottom',
+        labels: { color: labelColor }
+      }
+    }
+  }
+});
+
+{% if categories %}
+// Category Distribution Chart
+new Chart(document.getElementById('categoryChart'), {
+  type: 'doughnut',
+  data: {
+    labels: [{% for cat in categories %}'{{ cat.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+    datasets: [{
+      data: [{% for cat in categories %}{{ cat.product_count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+      backgroundColor: chartColors,
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { 
+        position: 'bottom',
+        labels: { color: labelColor }
+      }
+    }
+  }
+});
+{% endif %}
+</script>
+{% endblock %}
