@@ -280,14 +280,31 @@ def dashboard_product_create(request):
 def dashboard_product_edit(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
-        if form.is_valid():
+        form = ProductForm(request.POST, instance=product)
+        images_form = ProductImagesForm(request.POST, request.FILES, product=product)
+        if form.is_valid() and images_form.is_valid():
             form.save()
+            
+            # Save new uploaded images
+            files = images_form.cleaned_data.get('images', [])
+            next_position = product.images.count()
+            for i, image_file in enumerate(files):
+                ProductImage.objects.create(
+                    product=product,
+                    image=image_file,
+                    position=next_position + i
+                )
+            
             messages.success(request, 'Product updated.')
             return redirect('dashboard_products')
     else:
         form = ProductForm(instance=product)
-    return render(request, 'main/dashboard/product_edit.html', {'form': form, 'product': product})
+        images_form = ProductImagesForm(product=product)
+    return render(request, 'main/dashboard/product_edit.html', {
+        'form': form,
+        'images_form': images_form,
+        'product': product,
+    })
 
 
 @staff_required
