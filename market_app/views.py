@@ -3,8 +3,8 @@ import os
 import re
 
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegisterForm, EmailLoginForm, ProductForm, ProductImagesForm, ProfilePictureForm, CategoryForm, InquiryForm
-from .models import Product, ProductImage, Category, Inquiry
+from .forms import RegisterForm, EmailLoginForm, ProductForm, ProfilePictureForm, CategoryForm, InquiryForm
+from .models import Product, Category, Inquiry
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.models import User
@@ -249,62 +249,30 @@ def dashboard_products(request):
 @staff_required
 def dashboard_product_create(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST)
-        images_form = ProductImagesForm(request.POST, request.FILES)
-        if form.is_valid() and images_form.is_valid():
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
             product = form.save(commit=False)
             product.user = request.user
             product.save()
-            
-            # Save uploaded images
-            files = images_form.cleaned_data.get('images', [])
-            for position, image_file in enumerate(files):
-                ProductImage.objects.create(
-                    product=product,
-                    image=image_file,
-                    position=position
-                )
-            
             messages.success(request, 'Product created.')
             return redirect('dashboard_products')
     else:
         form = ProductForm()
-        images_form = ProductImagesForm()
-    return render(request, 'main/dashboard/product_create.html', {
-        'form': form,
-        'images_form': images_form,
-    })
+    return render(request, 'main/dashboard/product_create.html', {'form': form})
 
 
 @staff_required
 def dashboard_product_edit(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
-        images_form = ProductImagesForm(request.POST, request.FILES, product=product)
-        if form.is_valid() and images_form.is_valid():
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
             form.save()
-            
-            # Save new uploaded images
-            files = images_form.cleaned_data.get('images', [])
-            next_position = product.images.count()
-            for i, image_file in enumerate(files):
-                ProductImage.objects.create(
-                    product=product,
-                    image=image_file,
-                    position=next_position + i
-                )
-            
             messages.success(request, 'Product updated.')
             return redirect('dashboard_products')
     else:
         form = ProductForm(instance=product)
-        images_form = ProductImagesForm(product=product)
-    return render(request, 'main/dashboard/product_edit.html', {
-        'form': form,
-        'images_form': images_form,
-        'product': product,
-    })
+    return render(request, 'main/dashboard/product_edit.html', {'form': form, 'product': product})
 
 
 @staff_required
@@ -315,19 +283,6 @@ def dashboard_product_delete(request, pk):
         messages.success(request, 'Product deleted.')
         return redirect('dashboard_products')
     return render(request, 'main/dashboard/product_confirm_delete.html', {'product': product})
-
-
-@staff_required
-def dashboard_product_image_delete(request, pk, image_pk):
-    """Delete a single image from a product."""
-    product = get_object_or_404(Product, pk=pk)
-    image = get_object_or_404(ProductImage, pk=image_pk, product=product)
-    if request.method == 'POST':
-        image.image.delete(save=False)  # Delete from Supabase
-        image.delete()
-        messages.success(request, 'Image deleted.')
-        return redirect('dashboard_product_edit', pk=pk)
-    return redirect('dashboard_product_edit', pk=pk)
 
 
 @staff_required

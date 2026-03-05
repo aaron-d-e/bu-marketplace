@@ -4,12 +4,11 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from PIL import Image
-from .models import Product, Category, Inquiry, ProductCondition, ProductImage
+from .models import Product, Category, Inquiry, ProductCondition
 
 ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 MAX_IMAGE_SIZE = 2 * 1024 * 1024  # 2MB
 MAX_IMAGE_PIXELS = 4096 * 4096  # 16.7MP - limit decompression bomb risk
-MAX_PRODUCT_IMAGES = 5
 
 
 class RegisterForm(UserCreationForm):
@@ -68,79 +67,12 @@ class EmailLoginForm(forms.Form):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['title', 'category', 'description', 'price']
+        fields = ['title', 'category', 'description', 'price', 'image']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['image'].required = False
         self.fields['category'].queryset = Category.objects.all().order_by('name')
-
-
-class ProductImagesForm(forms.Form):
-    """Form for uploading multiple product images."""
-    images = forms.ImageField(
-        required=False,
-        widget=forms.ClearableFileInput(attrs={
-            'multiple': True,
-            'accept': 'image/jpeg,image/png,image/webp',
-        })
-    )
-
-    def __init__(self, *args, product=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.product = product
-
-    def clean_images(self):
-        """Validate uploaded images."""
-        files = self.files.getlist('images')
-        
-        if not files:
-            return []
-        
-        # Check max images limit
-        existing_count = 0
-        if self.product:
-            existing_count = self.product.images.count()
-        
-        if existing_count + len(files) > MAX_PRODUCT_IMAGES:
-            available = MAX_PRODUCT_IMAGES - existing_count
-            raise ValidationError(
-                f'Maximum {MAX_PRODUCT_IMAGES} images per product. '
-                f'You can add {available} more image(s).'
-            )
-        
-        validated_files = []
-        for f in files:
-            # Validate content type
-            if f.content_type not in ALLOWED_IMAGE_TYPES:
-                raise ValidationError(
-                    f'{f.name}: Invalid format. Please upload JPEG, PNG, or WebP images.'
-                )
-            
-            # Validate file size
-            if f.size > MAX_IMAGE_SIZE:
-                raise ValidationError(
-                    f'{f.name}: Image too large. Maximum size is 2MB.'
-                )
-            
-            # Verify it's a valid image
-            try:
-                f.seek(0)
-                img = Image.open(f)
-                img.load()
-                w, h = img.size
-                if w * h > MAX_IMAGE_PIXELS:
-                    raise ValidationError(
-                        f'{f.name}: Image dimensions too large. Maximum 4096×4096 pixels.'
-                    )
-                f.seek(0)
-            except (OSError, ValueError) as e:
-                raise ValidationError(
-                    f'{f.name}: Invalid or corrupted image.'
-                ) from e
-            
-            validated_files.append(f)
-        
-        return validated_files
 
 
 class CategoryForm(forms.ModelForm):

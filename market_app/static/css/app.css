@@ -2655,31 +2655,6 @@ body {
   font-weight: 600;
 }
 
-/* Product Image Thumbnails */
-.product-thumbnails {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
-
-.product-thumbnail {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  cursor: pointer;
-  border: 2px solid transparent;
-  border-radius: 6px;
-  transition: border-color 0.2s ease;
-}
-
-.product-thumbnail:hover {
-  border-color: var(--bu-gold);
-}
-
-.product-thumbnail.active {
-  border-color: var(--bu-green);
-}
-
 /* Product Info Card */
 .product-info-card {
   background: var(--card-bg);

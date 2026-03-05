@@ -16,13 +16,9 @@
     {% for product in products %}
     {% if not product.sold %} 
     <div class="product-card">
-        {% with primary_image=product.get_primary_image %}
-        {% if primary_image %}
-        <img src="{{ primary_image.image.url }}" alt="{{ product.title }}">
-        {% elif product.image %}
+        {% if product.image %}
         <img src="{{ product.image.url }}" alt="{{ product.title }}">
         {% endif %}
-        {% endwith %}
         <h3>{{ product.title }}</h3>
         {% if product.category %}
         <p class="product-category text-muted small mb-1">{{ product.category.name }}</p>

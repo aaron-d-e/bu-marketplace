@@ -16,7 +16,7 @@ class Product(models.Model):
     description = models.TextField(null=True)
     category = models.ForeignKey('Category', null=True, on_delete=models.CASCADE)
     price = models.FloatField(null=False)
-    image = models.ImageField(null=True)  # Deprecated: use ProductImage instead
+    image = models.ImageField(null=True)
     sold = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -24,23 +24,6 @@ class Product(models.Model):
     def __str__(self) -> str:
         return self.title
 
-    def get_primary_image(self):
-        """Return the first image (by position) or None."""
-        return self.images.first()
-
-
-class ProductImage(models.Model):
-    """Multiple images per product. First image by position is the primary."""
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField()  # Uses default storage (product-images bucket)
-    position = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['position', 'created_at']
-
-    def __str__(self):
-        return f"Image {self.position} for {self.product.title}"
 
 class Category(models.Model):
     name = models.CharField(max_length=100, null=False)
