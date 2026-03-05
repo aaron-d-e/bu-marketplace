@@ -15,18 +15,30 @@
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
-
-<body>
+<body class="site-body {% if 'dashboard' in request.resolver_match.url_name|default:'' or 'category_' in request.resolver_match.url_name|default:'' %}admin-panel{% endif %}">
   <nav class="navbar navbar-expand-lg navbar-bu">
     <div class="container-fluid">
       <div class="d-flex w-100 align-items-center">
         <ul class="navbar-nav">
           <li class="nav-item">
+            <a class="navbar-brand" href="{% url 'home' %}">
+              <img src="{% static 'images/BU_BrandMark_Horz_White.png' %}" alt="S.H.A.R.E Bear Logo" class="navbar-logo" style="height: 28px; width: auto;">
+            </a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="{% url 'home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'process' %}">How it Works</a>
           </li>
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'products' %}">Products</a>
+            <a class="nav-link" href="{% url 'inquiry' %}">Free AI Quote</a>
+          </li>
+          {% endif %}
+          {% if user.is_staff or user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin_dashboard' %}">Admin</a>
           </li>
           {% endif %}
         </ul>
@@ -63,12 +75,24 @@
       </div>
     </div>
   </nav>
-  {% block fullwidth_content %}
-  <div class="container">
-    {% block content %}
+  <main class="site-main">
+    {% block fullwidth_content %}
+    <div class="container">
+      {% if messages %}
+      <div class="mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% block content %}
+      {% endblock %}
+    </div>
     {% endblock %}
-  </div>
-  {% endblock %}
+  </main>
 
   <footer class="footer-bu">
     <div class="container">
@@ -146,7 +170,18 @@
         }
       });
     }
+
+    // Admin panel: auto-dismiss success/error messages after 2 seconds
+    if (document.body.classList.contains('admin-panel')) {
+      document.querySelectorAll('.alert.alert-dismissible').forEach(function(alertEl) {
+        setTimeout(function() {
+          var alert = bootstrap.Alert.getOrCreateInstance(alertEl);
+          alert.close();
+        }, 2000);
+      });
+    }
   </script>
+  {% block extra_js %}{% endblock %}
 </body>
 
 </html>

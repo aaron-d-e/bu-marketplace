@@ -25,7 +25,7 @@
                  value="{% if 'password' not in field.name %}{{ field.value|default:'' }}{% endif %}"
                  {% if field.field.required %}required{% endif %}>
           {% if field.help_text %}
-          <small class="form-help">{{ field.help_text|safe }}</small>
+          <small class="form-help">{{ field.help_text }}</small>
           {% endif %}
           {% if field.errors %}
           <div class="field-error">

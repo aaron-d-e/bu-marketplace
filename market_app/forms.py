@@ -3,11 +3,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from .models import Product, Category
-
+from PIL import Image
+from .models import Product, Category, Inquiry, ProductCondition
 
 ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 MAX_IMAGE_SIZE = 2 * 1024 * 1024  # 2MB
+MAX_IMAGE_PIXELS = 4096 * 4096  # 16.7MP - limit decompression bomb risk
 
 
 class RegisterForm(UserCreationForm):
@@ -23,6 +24,18 @@ class RegisterForm(UserCreationForm):
         if not email.endswith('@baylor.edu'):
             raise forms.ValidationError('Please use a Baylor email address.')
         return email
+
+# form that connects to the inquiry model
+class InquiryForm(forms.ModelForm):
+    class Meta:
+        model = Inquiry
+        fields = ['make', 'model', 'category', 'condition']
+
+    def clean_condition(self):
+        condition = self.cleaned_data.get('condition')
+        if condition not in ProductCondition.values:
+            raise forms.ValidationError('Invalid condition.')
+        return condition
 
 
 class EmailLoginForm(forms.Form):
@@ -62,6 +75,12 @@ class ProductForm(forms.ModelForm):
         self.fields['category'].queryset = Category.objects.all().order_by('name')
 
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+
+
 class ProfilePictureForm(forms.Form):
     """Form for uploading profile pictures."""
     profile_image = forms.ImageField(
@@ -75,20 +94,36 @@ class ProfilePictureForm(forms.Form):
 
     def clean_profile_image(self):
         image = self.cleaned_data.get('profile_image')
-        
+
         if not image:
             raise ValidationError('Please select an image.')
-        
-        # Validate content type
+
+        # Validate content type (first line of defense; can be spoofed)
         if image.content_type not in ALLOWED_IMAGE_TYPES:
             raise ValidationError(
                 'Invalid image format. Please upload a JPEG, PNG, or WebP image.'
             )
-        
+
         # Validate file size
         if image.size > MAX_IMAGE_SIZE:
             raise ValidationError(
                 f'Image too large. Maximum size is 2MB (yours: {image.size / 1024 / 1024:.1f}MB).'
             )
-        
+
+        # Verify file is actually a valid image (not spoofed content-type) and limit dimensions
+        try:
+            image.seek(0)
+            img = Image.open(image)
+            img.load()
+            w, h = img.size
+            if w * h > MAX_IMAGE_PIXELS:
+                raise ValidationError(
+                    'Image dimensions too large. Maximum 4096×4096 pixels.'
+                )
+            image.seek(0)
+        except (OSError, ValueError) as e:
+            raise ValidationError(
+                'Invalid or corrupted image. Please upload a valid JPEG, PNG, or WebP file.'
+            ) from e
+
         return image

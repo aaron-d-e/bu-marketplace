@@ -97,7 +97,7 @@ class ProductImageURLTests(TestCase):
 
 
 class ProductImageUploadViewTests(TestCase):
-    """Test create_product view with image uploads."""
+    """Test dashboard product create view with image uploads."""
 
     def setUp(self):
         self.client = Client()
@@ -108,48 +108,43 @@ class ProductImageUploadViewTests(TestCase):
             username='regular', password='regularpass123'
         )
 
-    def test_create_product_requires_superuser(self):
-        """Non-superusers cannot access create_product."""
+    def test_create_product_requires_staff(self):
+        """Non-staff users cannot access dashboard product create."""
         self.client.login(username='regular', password='regularpass123')
-        response = self.client.get(reverse('create_product'))
+        response = self.client.get(reverse('dashboard_product_create'))
         self.assertNotEqual(response.status_code, 200)
 
-    def test_superuser_can_access_create_product(self):
-        """Superusers can access create_product page."""
+    def test_staff_can_access_create_product(self):
+        """Staff/superuser can access dashboard product create page."""
         self.client.login(username='admin', password='adminpass123')
-        response = self.client.get(reverse('create_product'))
+        response = self.client.get(reverse('dashboard_product_create'))
         self.assertEqual(response.status_code, 200)
 
     @patch('storages.backends.s3.S3Storage.save')
     def test_create_product_with_image_upload(self, mock_save):
-        """Superuser can create product with image."""
+        """Staff can create product with image via dashboard."""
         mock_save.return_value = 'uploaded_image.jpg'
-        
         self.client.login(username='admin', password='adminpass123')
         image = create_test_image('uploaded_image.jpg')
-        
-        response = self.client.post(reverse('create_product'), {
+        response = self.client.post(reverse('dashboard_product_create'), {
             'title': 'New Product',
             'price': '25.00',
             'description': 'A test product',
             'image': image,
         })
-        
-        self.assertEqual(response.status_code, 302)  # Redirect on success
+        self.assertEqual(response.status_code, 302)
         self.assertTrue(Product.objects.filter(title='New Product').exists())
         mock_save.called
 
     @patch('storages.backends.s3.S3Storage.save')
     def test_create_product_without_image(self, mock_save):
-        """Product can be created without an image."""
+        """Product can be created without an image via dashboard."""
         self.client.login(username='admin', password='adminpass123')
-        
-        response = self.client.post(reverse('create_product'), {
+        response = self.client.post(reverse('dashboard_product_create'), {
             'title': 'No Image Product',
             'price': '15.00',
             'description': 'Product without image',
         })
-        
         self.assertEqual(response.status_code, 302)
         product = Product.objects.get(title='No Image Product')
         self.assertFalse(product.image)

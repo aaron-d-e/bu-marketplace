@@ -3,6 +3,9 @@ from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import sys
 
+# Limit decompression bomb risk (Pillow will raise DecompressionBombError if exceeded)
+Image.MAX_IMAGE_PIXELS = 64 * 1024 * 1024  # 64 megapixels
+
 
 def resize_profile_image(image_file, max_size=(500, 500)):
     """

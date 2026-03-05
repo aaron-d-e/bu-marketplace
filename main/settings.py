@@ -25,11 +25,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
-
-# SECURITY WARNING: don't run with mebug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-dev-only-set-SECRET_KEY-in-env-for-production'
+    else:
+        raise ValueError(
+            'SECRET_KEY environment variable must be set in production. '
+            'Generate one with: python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"'
+        )
 
 # Allow production domain and all Vercel preview URLs (*.vercel.app)
 _allowed = [h.strip() for h in os.getenv('ALLOWED_HOSTS', 'bu-marketplace.vercel.app').split(',') if h.strip()]
@@ -43,6 +51,16 @@ _origins = [o.strip() for o in os.getenv('CSRF_TRUSTED_ORIGINS', 'https://bu-mar
 if os.getenv('VERCEL') and os.getenv('VERCEL_URL'):
     _origins.append('https://' + os.getenv('VERCEL_URL'))
 CSRF_TRUSTED_ORIGINS = _origins
+
+# Production security: secure cookies and HSTS when not in debug mode
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 300
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    # If your app is behind a reverse proxy that terminates SSL, set SECURE_PROXY_SSL_HEADER
+    # e.g. SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -95,18 +113,6 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-def _env(key, default=None):
-    """Get env var and strip optional surrounding quotes."""
-    val = os.getenv(key, default)
-    if val is None or not isinstance(val, str):
-        return val
-    val = val.strip()
-    if (len(val) >= 2 and
-            ((val[0] == "'" and val[-1] == "'") or (val[0] == '"' and val[-1] == '"'))):
-        return val[1:-1].strip()
-    return val
-
 
 # On Vercel static build (build.sh runs migrate/collectstatic), use SQLite so we don't
 # need the Postgres driver during build. At runtime (wsgi) we use Postgres from DATABASE_URL.
@@ -168,7 +174,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles_build" / "static"
 # Supabase Storage Configuration (S3-compatible)
 SUPABASE_URL = os.getenv('SUPABASE_URL', 'https://nvumdffvsysdmpruyhyu.supabase.co')
 SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-SUPABASE_PROJECT_ID = 'nvumdffvsysdmpruyhyu'
+SUPABASE_PROJECT_ID = os.getenv('SUPABASE_PROJECT_ID', 'nvumdffvsysdmpruyhyu')
 
 # Django Storages - S3 compatible settings for Supabase
 STORAGES = {
