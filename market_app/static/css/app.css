@@ -485,7 +485,7 @@ body {
 
 /* Mission Section */
 .mission-section {
-  background: transparent;
+  background: var(--bg-secondary);
   margin: 0;
   position: relative;
   padding: 5rem 2rem;
@@ -526,38 +526,102 @@ body {
 
 .baylor-carousel-section {
   padding: 4rem 0;
-  background: transparent;
+  background: var(--bg-secondary);
 }
 
 .baylor-carousel {
   position: relative;
   width: 100%;
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
-  overflow: hidden;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(21, 71, 52, 0.15);
-}
-
-[data-theme="dark"] .baylor-carousel {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  overflow: visible;
+  padding: 0 60px;
 }
 
 .carousel-track {
   display: flex;
   transition: transform 0.5s ease;
+  gap: 20px;
 }
 
 .carousel-slide {
-  min-width: 100%;
+  min-width: calc(100% - 200px);
   flex-shrink: 0;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(21, 71, 52, 0.15);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  opacity: 0.4;
+  transform: scale(0.85);
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+[data-theme="dark"] .carousel-slide {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .carousel-slide img {
   width: 100%;
-  height: 400px;
+  height: 420px;
   object-fit: cover;
   display: block;
+}
+
+/* Gradient overlays on side slides */
+.carousel-slide::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.6) 0%, 
+    transparent 30%, 
+    transparent 70%, 
+    rgba(255, 255, 255, 0.6) 100%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.carousel-slide.active::after {
+  opacity: 0;
+}
+
+[data-theme="dark"] .carousel-slide::after {
+  background: linear-gradient(90deg, 
+    rgba(20, 36, 32, 0.7) 0%, 
+    transparent 30%, 
+    transparent 70%, 
+    rgba(20, 36, 32, 0.7) 100%);
+}
+
+/* Edge fade gradients on container */
+.baylor-carousel::before,
+.baylor-carousel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.baylor-carousel::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--bg-secondary) 0%, transparent 100%);
+}
+
+.baylor-carousel::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--bg-secondary) 0%, transparent 100%);
 }
 
 /* Arrow buttons */
@@ -565,11 +629,11 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   color: var(--bu-green);
   cursor: pointer;
   display: flex;
@@ -577,7 +641,7 @@ body {
   justify-content: center;
   transition: all 0.2s ease;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .carousel-arrow:hover {
@@ -587,15 +651,15 @@ body {
 }
 
 .carousel-arrow-left {
-  left: 16px;
+  left: 0;
 }
 
 .carousel-arrow-right {
-  right: 16px;
+  right: 0;
 }
 
 [data-theme="dark"] .carousel-arrow {
-  background: rgba(30, 40, 35, 0.9);
+  background: rgba(30, 40, 35, 0.95);
   color: var(--bu-gold);
 }
 
@@ -606,37 +670,38 @@ body {
 
 /* Dot indicators */
 .carousel-dots {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
-  gap: 8px;
-  z-index: 10;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1.5rem;
 }
 
 .carousel-dot {
-  width: 10px;
-  height: 10px;
-  border: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--bu-green);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
   padding: 0;
 }
 
 .carousel-dot:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(21, 71, 52, 0.3);
 }
 
 .carousel-dot.active {
-  background: var(--bu-gold);
+  background: var(--bu-green);
   transform: scale(1.2);
 }
 
 [data-theme="dark"] .carousel-dot {
-  background: rgba(255, 255, 255, 0.3);
+  border-color: var(--bu-gold);
+}
+
+[data-theme="dark"] .carousel-dot:hover {
+  background: rgba(255, 184, 28, 0.3);
 }
 
 [data-theme="dark"] .carousel-dot.active {
@@ -649,21 +714,26 @@ body {
     padding: 2rem 0;
   }
   
+  .baylor-carousel {
+    padding: 0 40px;
+  }
+  
+  .carousel-slide {
+    min-width: 100%;
+  }
+  
   .carousel-slide img {
-    height: 250px;
+    height: 280px;
   }
   
   .carousel-arrow {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
   
-  .carousel-arrow-left {
-    left: 8px;
-  }
-  
-  .carousel-arrow-right {
-    right: 8px;
+  .baylor-carousel::before,
+  .baylor-carousel::after {
+    width: 50px;
   }
 }
 

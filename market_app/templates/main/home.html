@@ -196,6 +196,18 @@
   <div class="container">
     <div class="baylor-carousel">
       <div class="carousel-track">
+        <div class="carousel-slide active">
+          <img src="{% static 'images/garden-planting.jpg' %}" alt="Students planting in community garden">
+        </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/research-lab.jpg' %}" alt="Baylor research lab">
+        </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/composting.jpg' %}" alt="Students composting at community garden">
+        </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/tree-campus.jpg' %}" alt="Baylor Tree Campus">
+        </div>
         <div class="carousel-slide">
           <img src="{% static 'images/Who.jpg' %}" alt="Baylor Students">
         </div>
@@ -216,11 +228,15 @@
           <polyline points="9 6 15 12 9 18"/>
         </svg>
       </button>
-      <div class="carousel-dots">
-        <button class="carousel-dot active" data-index="0" aria-label="Go to slide 1"></button>
-        <button class="carousel-dot" data-index="1" aria-label="Go to slide 2"></button>
-        <button class="carousel-dot" data-index="2" aria-label="Go to slide 3"></button>
-      </div>
+    </div>
+    <div class="carousel-dots">
+      <button class="carousel-dot active" data-index="0" aria-label="Go to slide 1"></button>
+      <button class="carousel-dot" data-index="1" aria-label="Go to slide 2"></button>
+      <button class="carousel-dot" data-index="2" aria-label="Go to slide 3"></button>
+      <button class="carousel-dot" data-index="3" aria-label="Go to slide 4"></button>
+      <button class="carousel-dot" data-index="4" aria-label="Go to slide 5"></button>
+      <button class="carousel-dot" data-index="5" aria-label="Go to slide 6"></button>
+      <button class="carousel-dot" data-index="6" aria-label="Go to slide 7"></button>
     </div>
   </div>
 </section>
@@ -244,12 +260,13 @@
 <script>
   // Baylor Image Carousel
   (function() {
+    const carouselSection = document.querySelector('.baylor-carousel-section');
     const carousel = document.querySelector('.baylor-carousel');
     if (!carousel) return;
     
     const track = carousel.querySelector('.carousel-track');
     const slides = carousel.querySelectorAll('.carousel-slide');
-    const dots = carousel.querySelectorAll('.carousel-dot');
+    const dots = carouselSection.querySelectorAll('.carousel-dot');
     const prevBtn = carousel.querySelector('.carousel-arrow-left');
     const nextBtn = carousel.querySelector('.carousel-arrow-right');
     
@@ -257,11 +274,24 @@
     let autoScrollInterval;
     const AUTO_SCROLL_DELAY = 4000;
     
+    // Calculate slide width including gap
+    function getSlideOffset() {
+      const slide = slides[0];
+      const gap = 20; // matches CSS gap
+      return slide.offsetWidth + gap;
+    }
+    
     function goToSlide(index) {
       if (index < 0) index = slides.length - 1;
       if (index >= slides.length) index = 0;
       currentIndex = index;
-      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+      
+      // Center the active slide
+      const offset = getSlideOffset() * currentIndex;
+      track.style.transform = `translateX(-${offset}px)`;
+      
+      // Update active states
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === currentIndex));
       dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
     }
     
@@ -296,7 +326,11 @@
     carousel.addEventListener('mouseenter', stopAutoScroll);
     carousel.addEventListener('mouseleave', startAutoScroll);
     
+    // Initialize first slide as active
+    slides[0].classList.add('active');
+    
     // Start auto-scroll
+    startAutoScroll();
     startAutoScroll();
   })();
 
