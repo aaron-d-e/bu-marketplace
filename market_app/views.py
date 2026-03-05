@@ -145,6 +145,19 @@ def product_detail(request, pk):
     return render(request, 'main/product_detail.html', {'product': product})
 
 
+@login_required
+def checkout(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    
+    if request.method == 'POST':
+        # Mock payment processing - mark product as sold
+        product.sold = True
+        product.save()
+        messages.success(request, f'Payment successful! You purchased "{product.title}".')
+        return redirect('home')
+    
+    return render(request, 'main/checkout.html', {'product': product})
+
 
 @login_required
 def settings_view(request):
