@@ -258,42 +258,83 @@
 
 {% block extra_js %}
 <script>
-  // Baylor Image Carousel
+  // Baylor Image Carousel (Infinite/Circular)
   (function() {
     const carouselSection = document.querySelector('.baylor-carousel-section');
     const carousel = document.querySelector('.baylor-carousel');
     if (!carousel) return;
     
     const track = carousel.querySelector('.carousel-track');
-    const slides = carousel.querySelectorAll('.carousel-slide');
+    const originalSlides = Array.from(carousel.querySelectorAll('.carousel-slide'));
     const dots = carouselSection.querySelectorAll('.carousel-dot');
     const prevBtn = carousel.querySelector('.carousel-arrow-left');
     const nextBtn = carousel.querySelector('.carousel-arrow-right');
     
-    let currentIndex = 0;
+    const totalOriginal = originalSlides.length;
     let autoScrollInterval;
-    const AUTO_SCROLL_DELAY = 4000;
+    const AUTO_SCROLL_DELAY = 5000; // 5 seconds
+    
+    // Clone slides for infinite loop: [clone last 2] [originals] [clone first 2]
+    const clonesPerSide = 2;
+    
+    // Clone last slides and prepend
+    for (let i = totalOriginal - 1; i >= totalOriginal - clonesPerSide; i--) {
+      const clone = originalSlides[i].cloneNode(true);
+      clone.classList.add('clone');
+      track.insertBefore(clone, track.firstChild);
+    }
+    
+    // Clone first slides and append
+    for (let i = 0; i < clonesPerSide; i++) {
+      const clone = originalSlides[i].cloneNode(true);
+      clone.classList.add('clone');
+      track.appendChild(clone);
+    }
+    
+    const allSlides = carousel.querySelectorAll('.carousel-slide');
+    let currentIndex = clonesPerSide; // Start at first real slide
     
     // Calculate slide width including gap
     function getSlideOffset() {
-      const slide = slides[0];
+      const slide = allSlides[0];
       const gap = 20; // matches CSS gap
       return slide.offsetWidth + gap;
     }
     
-    function goToSlide(index) {
-      if (index < 0) index = slides.length - 1;
-      if (index >= slides.length) index = 0;
-      currentIndex = index;
+    function updateActiveStates() {
+      // Map to original index for dots
+      let realIndex = currentIndex - clonesPerSide;
+      if (realIndex < 0) realIndex = totalOriginal + realIndex;
+      if (realIndex >= totalOriginal) realIndex = realIndex - totalOriginal;
       
-      // Center the active slide
-      const offset = getSlideOffset() * currentIndex;
-      track.style.transform = `translateX(-${offset}px)`;
-      
-      // Update active states
-      slides.forEach((slide, i) => slide.classList.toggle('active', i === currentIndex));
-      dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+      allSlides.forEach((slide, i) => slide.classList.toggle('active', i === currentIndex));
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === realIndex));
     }
+    
+    function goToSlide(index, animate = true) {
+      currentIndex = index;
+      const offset = getSlideOffset() * currentIndex;
+      
+      if (animate) {
+        track.style.transition = 'transform 0.5s ease-in-out';
+      } else {
+        track.style.transition = 'none';
+      }
+      track.style.transform = `translateX(-${offset}px)`;
+      updateActiveStates();
+    }
+    
+    // Handle infinite loop jump after transition
+    track.addEventListener('transitionend', () => {
+      // If at clone of last slide (before first), jump to real last
+      if (currentIndex < clonesPerSide) {
+        goToSlide(totalOriginal + currentIndex, false);
+      }
+      // If at clone of first slide (after last), jump to real first
+      if (currentIndex >= totalOriginal + clonesPerSide) {
+        goToSlide(currentIndex - totalOriginal, false);
+      }
+    });
     
     function nextSlide() {
       goToSlide(currentIndex + 1);
@@ -304,6 +345,7 @@
     }
     
     function startAutoScroll() {
+      stopAutoScroll();
       autoScrollInterval = setInterval(nextSlide, AUTO_SCROLL_DELAY);
     }
     
@@ -317,7 +359,7 @@
     dots.forEach(dot => {
       dot.addEventListener('click', () => {
         stopAutoScroll();
-        goToSlide(parseInt(dot.dataset.index));
+        goToSlide(clonesPerSide + parseInt(dot.dataset.index));
         startAutoScroll();
       });
     });
@@ -326,11 +368,10 @@
     carousel.addEventListener('mouseenter', stopAutoScroll);
     carousel.addEventListener('mouseleave', startAutoScroll);
     
-    // Initialize first slide as active
-    slides[0].classList.add('active');
+    // Initialize: position at first real slide
+    goToSlide(currentIndex, false);
     
     // Start auto-scroll
-    startAutoScroll();
     startAutoScroll();
   })();
 
