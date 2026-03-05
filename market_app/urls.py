@@ -18,6 +18,7 @@ urlpatterns = [
     path('inquiry/', views.inquiry_view, name='inquiry'),
     path('inquiry/success/<int:inquiry_id>/', views.inquiry_success, name='inquiry_success'),
     path('inquiry/<int:inquiry_id>/video/', views.inquiry_video, name='inquiry_video'),
+    path('user_items/', views.user_items, name='user_items'),
 
     # Admin dashboard (products + categories CRUD)
     path('dashboard/', views.dashboard_index, name='admin_dashboard'),

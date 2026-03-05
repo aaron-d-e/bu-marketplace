@@ -10,6 +10,10 @@
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <title>{% block title %}My Site{% endblock %}</title>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="site-body {% if 'dashboard' in request.resolver_match.url_name|default:'' or 'category_' in request.resolver_match.url_name|default:'' %}admin-panel{% endif %}">
   <nav class="navbar navbar-expand-lg navbar-bu">
@@ -55,6 +59,9 @@
             <div class="user-dropdown-menu" id="user-menu">
               <a href="{% url 'settings' %}" class="user-dropdown-item">
                 Settings
+              </a>
+              <a href="{% url 'user_items' %}" class="user-dropdown-item">
+                  My Items
               </a>
               <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
