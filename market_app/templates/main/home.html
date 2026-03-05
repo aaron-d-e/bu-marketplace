@@ -191,60 +191,35 @@
   </div>
 </section>
 
-<div class="homepage-bg">
-<!-- Interactive Info Cards -->
-<section class="info-cards">
+<!-- Baylor Image Carousel -->
+<section class="baylor-carousel-section">
   <div class="container">
-    <div class="row g-4">
-      <!-- WHO Card -->
-      <div class="col-md-4">
-        <div class="info-card scroll-animate" data-delay="1" tabindex="0">
-          <div class="info-card-inner">
-            <div class="info-card-front">
-              <img src="{% static 'images/Who.jpg' %}" alt="Who" class="info-card-img">
-              <h3>WHO</h3>
-              <p class="info-hint">Click to learn more</p>
-            </div>
-            <div class="info-card-back">
-              <h4>For Baylor Students</h4>
-              <p>A marketplace exclusively for the Baylor community. Students helping students find what they need at prices they can afford.</p>
-            </div>
-          </div>
+    <div class="baylor-carousel">
+      <div class="carousel-track">
+        <div class="carousel-slide">
+          <img src="{% static 'images/Who.jpg' %}" alt="Baylor Students">
+        </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/why.jpg' %}" alt="Sustainability">
+        </div>
+        <div class="carousel-slide">
+          <img src="{% static 'images/for.jpg' %}" alt="Dorm Essentials">
         </div>
       </div>
-
-      <!-- WHY Card -->
-      <div class="col-md-4">
-        <div class="info-card scroll-animate" data-delay="2" tabindex="0">
-          <div class="info-card-inner">
-            <div class="info-card-front">
-              <img src="{% static 'images/why.jpg' %}" alt="Why" class="info-card-img">
-              <h3>WHY</h3>
-              <p class="info-hint">Click to learn more</p>
-            </div>
-            <div class="info-card-back">
-              <h4>Sustainability & Savings</h4>
-              <p>Every year, students throw away perfectly good dorm essentials. We rescue them, giving items a second life while saving you money.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FOR Card -->
-      <div class="col-md-4">
-        <div class="info-card scroll-animate" data-delay="3" tabindex="0">
-          <div class="info-card-inner">
-            <div class="info-card-front">
-              <img src="{% static 'images/for.jpg' %}" alt="For" class="info-card-img">
-              <h3>FOR</h3>
-              <p class="info-hint">Click to learn more</p>
-            </div>
-            <div class="info-card-back">
-              <h4>Dorm Essentials</h4>
-              <p>Mini-fridges, microwaves, storage bins, furniture, decor, and more. Everything you need to make your dorm feel like home.</p>
-            </div>
-          </div>
-        </div>
+      <button class="carousel-arrow carousel-arrow-left" aria-label="Previous slide">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <button class="carousel-arrow carousel-arrow-right" aria-label="Next slide">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 6 15 12 9 18"/>
+        </svg>
+      </button>
+      <div class="carousel-dots">
+        <button class="carousel-dot active" data-index="0" aria-label="Go to slide 1"></button>
+        <button class="carousel-dot" data-index="1" aria-label="Go to slide 2"></button>
+        <button class="carousel-dot" data-index="2" aria-label="Go to slide 3"></button>
       </div>
     </div>
   </div>
@@ -263,18 +238,67 @@
     </div>
   </div>
 </section>
-
-</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Info card flip
-  document.querySelectorAll('.info-card').forEach(function(card) {
-    card.addEventListener('click', function() {
-      this.classList.toggle('flipped');
+  // Baylor Image Carousel
+  (function() {
+    const carousel = document.querySelector('.baylor-carousel');
+    if (!carousel) return;
+    
+    const track = carousel.querySelector('.carousel-track');
+    const slides = carousel.querySelectorAll('.carousel-slide');
+    const dots = carousel.querySelectorAll('.carousel-dot');
+    const prevBtn = carousel.querySelector('.carousel-arrow-left');
+    const nextBtn = carousel.querySelector('.carousel-arrow-right');
+    
+    let currentIndex = 0;
+    let autoScrollInterval;
+    const AUTO_SCROLL_DELAY = 4000;
+    
+    function goToSlide(index) {
+      if (index < 0) index = slides.length - 1;
+      if (index >= slides.length) index = 0;
+      currentIndex = index;
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
+    }
+    
+    function nextSlide() {
+      goToSlide(currentIndex + 1);
+    }
+    
+    function prevSlide() {
+      goToSlide(currentIndex - 1);
+    }
+    
+    function startAutoScroll() {
+      autoScrollInterval = setInterval(nextSlide, AUTO_SCROLL_DELAY);
+    }
+    
+    function stopAutoScroll() {
+      clearInterval(autoScrollInterval);
+    }
+    
+    // Event listeners
+    prevBtn.addEventListener('click', () => { stopAutoScroll(); prevSlide(); startAutoScroll(); });
+    nextBtn.addEventListener('click', () => { stopAutoScroll(); nextSlide(); startAutoScroll(); });
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        stopAutoScroll();
+        goToSlide(parseInt(dot.dataset.index));
+        startAutoScroll();
+      });
     });
-  });
+    
+    // Pause on hover
+    carousel.addEventListener('mouseenter', stopAutoScroll);
+    carousel.addEventListener('mouseleave', startAutoScroll);
+    
+    // Start auto-scroll
+    startAutoScroll();
+  })();
 
   function updateNoItemsMessage() {
     var productLinks = document.querySelectorAll('.product-card-link');

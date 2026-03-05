@@ -340,13 +340,6 @@ body {
 
 /* ===== HOMEPAGE STYLES ===== */
 
-/* Homepage wrapper - transparent to show body grid */
-.homepage-bg {
-  background: transparent;
-  padding-bottom: 2rem;
-  position: relative;
-}
-
 /* Hero Section - transparent to show body grid */
 .hero-section {
   background: transparent;
@@ -490,167 +483,6 @@ body {
   }
 }
 
-/* Interactive Info Cards */
-.info-cards {
-  perspective: 1000px;
-  padding: 5rem 0;
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
-}
-
-.info-cards .row {
-  width: 100%;
-}
-
-.info-card {
-  height: 380px;
-  cursor: pointer;
-  perspective: 1000px;
-  margin-bottom: 2rem;
-}
-
-.info-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform-style: preserve-3d;
-}
-
-.info-card.flipped .info-card-inner {
-  transform: rotateY(180deg);
-}
-
-.info-card-front,
-.info-card-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  backface-visibility: hidden;
-  border-radius: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  box-shadow: 0 8px 30px rgba(21, 71, 52, 0.15);
-  transition: box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease;
-}
-
-.info-card.flipped .info-card-front,
-.info-card.flipped .info-card-back {
-  box-shadow: 0 16px 50px rgba(21, 71, 52, 0.35);
-}
-
-[data-theme="dark"] .info-card.flipped .info-card-front,
-[data-theme="dark"] .info-card.flipped .info-card-back {
-  box-shadow: 0 16px 50px rgba(255, 184, 28, 0.2);
-}
-
-.info-card-front {
-  background: var(--card-bg);
-  border: 3px solid #154734;
-  z-index: 2;
-}
-
-[data-theme="dark"] .info-card-front {
-  background: var(--card-bg);
-  border-color: #FFB81C;
-}
-
-.info-card-img {
-  width: 140px;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 50%;
-  margin-bottom: 1.5rem;
-  border: 4px solid #154734;
-  box-shadow: 0 4px 15px rgba(21, 71, 52, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.info-card.flipped .info-card-img {
-  transform: scale(1.15);
-  box-shadow: 0 8px 25px rgba(21, 71, 52, 0.3);
-}
-
-.info-card-front .info-icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-  transition: transform 0.3s ease;
-}
-
-.info-card.flipped .info-card-front .info-icon {
-  transform: scale(1.1);
-}
-
-.info-card-front h3 {
-  color: #154734;
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin: 0;
-  transition: color 0.3s ease;
-}
-
-[data-theme="dark"] .info-card-front h3 {
-  color: #FFB81C;
-}
-
-.info-card-front .info-hint {
-  color: #666;
-  font-size: 0.9rem;
-  margin-top: 0.75rem;
-  font-style: italic;
-  transition: color 0.3s ease;
-}
-
-[data-theme="dark"] .info-card-front .info-hint {
-  color: #b8c8b8;
-}
-
-.info-card-back {
-  background: var(--bu-green);
-  color: #FFFFFF;
-  -webkit-transform: rotateY(180deg);
-  -moz-transform: rotateY(180deg);
-  transform: rotateY(180deg);
-  text-align: center;
-  z-index: 1;
-  border: 3px solid #FFB81C;
-}
-
-[data-theme="dark"] .info-card-back {
-  background: var(--bu-gold);
-  border-color: #154734;
-}
-
-.info-card-back h4 {
-  color: #FFB81C;
-  font-size: 1.4rem;
-  margin-bottom: 1.25rem;
-  font-weight: 700;
-}
-
-[data-theme="dark"] .info-card-back h4 {
-  color: #0d2e22;
-}
-
-.info-card-back p {
-  font-size: 1rem;
-  line-height: 1.7;
-  margin: 0;
-  color: #FFFFFF;
-}
-
-[data-theme="dark"] .info-card-back p {
-  color: #0d2e22;
-}
-
 /* Mission Section */
 .mission-section {
   background: transparent;
@@ -686,6 +518,153 @@ body {
 
 [data-theme="dark"] .mission-text {
   color: #b8c8b8;
+}
+
+/* ==========================================================================
+   Baylor Image Carousel
+   ========================================================================== */
+
+.baylor-carousel-section {
+  padding: 4rem 0;
+  background: transparent;
+}
+
+.baylor-carousel {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(21, 71, 52, 0.15);
+}
+
+[data-theme="dark"] .baylor-carousel {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  flex-shrink: 0;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Arrow buttons */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--bu-green);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.carousel-arrow:hover {
+  background: var(--bu-green);
+  color: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-arrow-left {
+  left: 16px;
+}
+
+.carousel-arrow-right {
+  right: 16px;
+}
+
+[data-theme="dark"] .carousel-arrow {
+  background: rgba(30, 40, 35, 0.9);
+  color: var(--bu-gold);
+}
+
+[data-theme="dark"] .carousel-arrow:hover {
+  background: var(--bu-gold);
+  color: #0d1a14;
+}
+
+/* Dot indicators */
+.carousel-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.carousel-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.carousel-dot.active {
+  background: var(--bu-gold);
+  transform: scale(1.2);
+}
+
+[data-theme="dark"] .carousel-dot {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .carousel-dot.active {
+  background: var(--bu-gold);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .baylor-carousel-section {
+    padding: 2rem 0;
+  }
+  
+  .carousel-slide img {
+    height: 250px;
+  }
+  
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .carousel-arrow-left {
+    left: 8px;
+  }
+  
+  .carousel-arrow-right {
+    right: 8px;
+  }
 }
 
 /* Features Section */
@@ -825,15 +804,6 @@ body {
   
   .hero-subtitle {
     font-size: 0.9rem;
-  }
-  
-  .info-card {
-    height: 280px;
-  }
-  
-  .info-cards {
-    min-height: auto;
-    padding: 2rem 0;
   }
   
   .mission-section {
