@@ -29,7 +29,7 @@ class RegisterForm(UserCreationForm):
 class InquiryForm(forms.ModelForm):
     class Meta:
         model = Inquiry
-        fields = ['make', 'model', 'category', 'condition']
+        fields = ['make', 'model', 'condition']
 
     def clean_condition(self):
         condition = self.cleaned_data.get('condition')
