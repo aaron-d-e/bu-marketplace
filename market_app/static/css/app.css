@@ -32,6 +32,7 @@ html, body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 /* Global body background with grid */
@@ -527,7 +528,6 @@ body {
 .baylor-carousel-section {
   padding: 4rem 0;
   background: var(--bg-secondary);
-  overflow: hidden;
 }
 
 .baylor-carousel {
@@ -535,7 +535,7 @@ body {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  overflow: hidden;
+  overflow: visible;
   padding: 0 60px;
 }
 
