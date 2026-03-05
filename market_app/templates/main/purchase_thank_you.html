@@ -1,0 +1,30 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}Thank you{% endblock %}
+
+{% block content %}
+<div class="static-page purchase-thank-you-page">
+  <div class="content-card purchase-thank-you-card text-center">
+    <div class="purchase-thank-you-icon" aria-hidden="true">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+    </div>
+    <h1 class="page-title">Thank you for your purchase</h1>
+    <p class="purchase-thank-you-message">
+      {% if purchase_title %}
+      You’ve successfully purchased <strong>{{ purchase_title }}</strong>.
+      {% else %}
+      Your purchase was successful.
+      {% endif %}
+    </p>
+    <p class="purchase-thank-you-next">
+      Pick up your item at the Baylor campus storefront, or opt for delivery when we contact you.
+    </p>
+    <p class="mt-4 mb-0">
+      <a href="{% url 'home' %}" class="btn-purchase-back">Back to home</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

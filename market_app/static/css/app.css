@@ -2053,6 +2053,162 @@ body {
   color: #e6a619;
 }
 
+/* ===== CHECKOUT & PURCHASE THANK YOU ===== */
+
+.checkout-card,
+.purchase-thank-you-card {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.checkout-summary {
+  margin-top: 1rem;
+}
+
+.checkout-product {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-primary);
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.checkout-product-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.checkout-product-placeholder {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--grid-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+}
+
+.checkout-product-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem;
+}
+
+.checkout-product-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--bu-green);
+  margin: 0;
+}
+
+[data-theme="dark"] .checkout-product-price {
+  color: var(--bu-gold);
+}
+
+.checkout-form {
+  margin-bottom: 1rem;
+}
+
+.btn-checkout-confirm {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: var(--bu-green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-checkout-confirm:hover {
+  background: var(--bu-green-hover);
+  color: white;
+}
+
+[data-theme="dark"] .btn-checkout-confirm {
+  background: var(--bu-gold);
+  color: var(--bu-green);
+}
+
+[data-theme="dark"] .btn-checkout-confirm:hover {
+  background: #e6a619;
+  color: var(--bu-green);
+}
+
+.checkout-back a {
+  font-size: 0.95rem;
+  color: var(--bu-green);
+  text-decoration: none;
+}
+
+.checkout-back a:hover {
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .checkout-back a {
+  color: var(--bu-gold);
+}
+
+.purchase-thank-you-icon {
+  color: var(--bu-green);
+  margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .purchase-thank-you-icon {
+  color: var(--bu-gold);
+}
+
+.purchase-thank-you-icon svg {
+  display: inline-block;
+}
+
+.purchase-thank-you-message {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.purchase-thank-you-next {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+/* Scoped under .static-page so link color override doesn't make button text invisible */
+.static-page .btn-purchase-back {
+  display: inline-block;
+  padding: 0.6rem 1.25rem;
+  background: var(--bu-green);
+  color: white !important;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.static-page .btn-purchase-back:hover {
+  background: var(--bu-green-hover);
+  color: white !important;
+}
+
+[data-theme="dark"] .static-page .btn-purchase-back {
+  background: var(--bu-gold);
+  color: var(--bu-green) !important;
+}
+
+[data-theme="dark"] .static-page .btn-purchase-back:hover {
+  background: #e6a619;
+  color: var(--bu-green) !important;
+}
+
 /* ===== LEADERSHIP PAGE ===== */
 
 .leadership-page {
