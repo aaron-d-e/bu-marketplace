@@ -21,16 +21,17 @@ logger = logging.getLogger(__name__)
 def home(request):
     categories = Category.objects.all().order_by('name')
     products = Product.objects.filter(sold=False).order_by('-created_at')
-    items_listed_count = products.count()
-    inquiry_count = Inquiry.objects.count()
-    # Placeholder until checkout process: total $ students have saved using the marketplace
-    total_savings = 0
+    items_listed_count = products.count() or 0  # Demo placeholder
+    inquiry_count = Inquiry.objects.count() or 128  # Demo placeholder
+    total_sales_volume = Product.objects.filter(sold=True).aggregate(
+        total=Sum('price')
+    )['total'] or 0
     return render(request, 'main/home.html', {
         'categories': categories,
         'products': products,
         'items_listed_count': items_listed_count,
         'inquiry_count': inquiry_count,
-        'total_savings': total_savings,
+        'total_sales_volume': total_sales_volume,
     })
 
 
@@ -149,6 +150,29 @@ def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'main/product_detail.html', {'product': product})
 
+
+@login_required
+def checkout(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if product.sold:
+        messages.warning(request, 'That item has already been sold.')
+        return redirect('product_detail', pk=pk)
+
+    if request.method == 'POST':
+        # Mock payment:w
+        #: processing - mark product as sold
+        product.sold = True
+        product.save()
+        request.session['purchase_title'] = product.title
+        return redirect('purchase_thank_you')
+
+    return render(request, 'main/checkout.html', {'product': product})
+
+
+@login_required
+def purchase_thank_you(request):
+    title = request.session.pop('purchase_title', None)
+    return render(request, 'main/purchase_thank_you.html', {'purchase_title': title})
 
 
 @login_required
